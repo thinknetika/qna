@@ -4,7 +4,7 @@ FactoryBot.define do
     body { Faker::Lorem.paragraph }
   end
 
-  trait :invalid do
+  trait :invalid_question do
     title { nil }
   end
 end

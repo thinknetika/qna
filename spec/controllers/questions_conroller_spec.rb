@@ -41,18 +41,6 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe 'GET #edit' do
-    before { get :edit, params: { id: question } }
-
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
-    end
-
-    it 'render show view' do
-      expect(response).to render_template :edit
-    end
-  end
-
   describe 'POST #create' do
     context 'with valid attributes' do
       it 'saves new question in the database' do
@@ -67,13 +55,25 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'with invalid attributes' do
       it 'does note save the question' do
-        expect { post :create, params: { question: attributes_for(:question, :invalid) } }
+        expect { post :create, params: { question: attributes_for(:question, :invalid_question) } }
       end
 
       it 're-render new view' do
-        post :create, params: { question: attributes_for(:question, :invalid) }
+        post :create, params: { question: attributes_for(:question, :invalid_question) }
         expect(response).to render_template :new
       end
+    end
+  end
+
+  describe 'GET #edit' do
+    before { get :edit, params: { id: question } }
+
+    it 'assigns the requested question to @question' do
+      expect(assigns(:question)).to eq question
+    end
+
+    it 'render show view' do
+      expect(response).to render_template :edit
     end
   end
 
@@ -101,7 +101,7 @@ RSpec.describe QuestionsController, type: :controller do
     context 'with invalid attributes' do
       before do
         @original_question = question
-        patch :update, params: { id: question, question: attributes_for(:question, :invalid) }
+        patch :update, params: { id: question, question: attributes_for(:question, :invalid_question) }
       end
 
       it 'does not change question' do
@@ -128,6 +128,5 @@ RSpec.describe QuestionsController, type: :controller do
       delete :destroy, params: { id: question }
       expect(response).to redirect_to questions_path
     end
-
   end
 end
