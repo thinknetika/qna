@@ -1,4 +1,5 @@
 class QuestionsController < ApplicationController
+  skip_before_action :authenticate_user!, only: %i[index show]
   before_action :set_question, only: %i[show edit update destroy]
 
   def index
@@ -15,9 +16,9 @@ class QuestionsController < ApplicationController
     @question = Question.new(question_params)
 
     if @question.save
-      redirect_to @question
+      redirect_to @question, notice: "Your question successfully created", status: :see_other
     else
-      render :new
+      render :new, status: :unprocessable_content
     end
   end
 
