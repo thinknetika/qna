@@ -42,4 +42,6 @@
 
 # Ignore .idea files
 /.idea
-/*.sqlite
+
+# Ignore sqlite files
+/identifier.sqlite
