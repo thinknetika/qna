@@ -1,2 +1,8 @@
 h1= @question.title
 p= @question.body
+
+= render partial: 'answers/answer', collection: @answers
+
+= render 'shared/errors', resource: @answer
+
+= render partial: 'answers/form', locals: { question: @question, answer: @answer }

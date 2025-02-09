@@ -11,9 +11,9 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params)
 
     if @answer.save
-      redirect_to @question
+      redirect_to @question, notice: "Your answer successfully created", status: :see_other
     else
-      render :new
+      render 'questions/show', status: :unprocessable_entity
     end
   end
 
