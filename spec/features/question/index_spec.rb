@@ -16,6 +16,7 @@ feature 'User can view all the questions', %q(
       expect(page).to have_content question.body[0..50]
     end
   end
+
   scenario 'Authenticated user can view all questions' do
     sign_in(user)
     visit questions_path
