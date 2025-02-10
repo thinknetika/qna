@@ -84,8 +84,8 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe  'PATCH #update' do
-    before { login(user) }
+  describe 'PATCH #update' do
+    before { login(question.author) }
 
     context 'with valid attributes' do
       it 'assign the requested question to @question' do
@@ -127,7 +127,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }
+    before { login(question.author) }
 
     let!(:question) { create(:question) }
 

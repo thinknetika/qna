@@ -3,4 +3,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  has_many :questions, foreign_key: 'author_id', dependent: :destroy
+
+  def owns?(resource)
+    resource.respond_to?(:author_id) && id == resource.author_id
+  end
 end
