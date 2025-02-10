@@ -24,7 +24,6 @@ RSpec.describe AnswersController, type: :controller do
 
     context 'with valid attributes' do
       it 'saves new answer in the database' do
-        puts "question: #{question}; id: #{question.id}"
         expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer) } }.to change(Answer, :count).by(1)
       end
 
@@ -60,8 +59,8 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  describe  'PATCH #update' do
-    before { login(user) }
+  describe 'PATCH #update' do
+    before { login(answer.author) }
 
     context 'with valid attributes' do
       it 'assign the requested answer to @answer' do
@@ -83,7 +82,7 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     context 'with invalid attributes' do
-      before { login(user) }
+      before { login(answer.author) }
 
       before do
         @original_answer = answer
@@ -103,7 +102,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    before { login(user) }
+    before { login(answer.author) }
 
     let!(:answer) { create(:answer, question: question) }
 

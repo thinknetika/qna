@@ -2,18 +2,18 @@ class AnswersController < ApplicationController
   before_action :set_question, only: %i[new create]
   before_action :set_answer, only: %i[edit update destroy]
   before_action :set_question_from_answer, only: %i[update destroy]
+  before_action :authorize_answer!, only: %i[update destroy]
 
   def new
     @answer = @question.answers.new
   end
 
   def create
-    @answer = @question.answers.build(answer_params)
-
+    @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
     if @answer.save
       redirect_to @question, notice: "Your answer successfully created", status: :see_other
     else
-      render 'questions/show', status: :unprocessable_entity
+      render "questions/show", status: :unprocessable_entity
     end
   end
 
@@ -30,7 +30,7 @@ class AnswersController < ApplicationController
   def destroy
     @answer.destroy
 
-    redirect_to @question
+    redirect_to @question, notice:  "Your answer was successfully deleted", status: :see_other
   end
 
   private
@@ -49,5 +49,11 @@ class AnswersController < ApplicationController
 
   def answer_params
     params.require(:answer).permit(:body)
+  end
+
+  def authorize_answer!
+    unless current_user&.owns?(@answer)
+      redirect_to answer_path(@answer), alert: "You are not authorized to perform this action.", status: :see_other
+    end
   end
 end

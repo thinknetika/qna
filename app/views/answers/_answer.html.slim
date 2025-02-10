@@ -1,1 +1,6 @@
 p= answer.body
+
+- if current_user&.owns?(answer)
+  = link_to 'Delete answer', answer_path(answer),
+          method: :delete,
+          data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }
