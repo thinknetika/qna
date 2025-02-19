@@ -1,4 +1,10 @@
-= form_with model: [@question, @answer || Answer.new], url: question_answers_path(@question) do |f|
-  = f.label :body
-  = f.text_area :body
-  = f.submit 'Answer'
+= form_with url: question_answers_path(@question), model: @answer, data: { controller: "answer-form" } do |form|
+  div data-answer-form-target="errors"
+    = render 'shared/errors', resource: @answer
+
+  = form.label :body, "Your Answer"
+  br
+  = form.text_area :body, data: { "answer-form-target": "body" }
+  br
+  br
+  = form.submit "Post Answer"

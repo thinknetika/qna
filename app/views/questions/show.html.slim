@@ -6,8 +6,8 @@ p= @question.body
           method: :delete,
           data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }
 
-= render partial: 'answers/answer', collection: @answers
+div id="answers"
+  = render partial: 'answers/answer', collection: @answers
 
-= render 'shared/errors', resource: @answer
-
-= render partial: 'answers/form', locals: { question: @question, answer: @answer }
+div id="answer_form"
+  = render partial: 'answers/form', locals: { question: @question, answer: @answer }

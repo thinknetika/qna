@@ -10,10 +10,13 @@ class AnswersController < ApplicationController
 
   def create
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
-    if @answer.save
-      redirect_to @question, notice: "Your answer successfully created", status: :see_other
-    else
-      render "questions/show", status: :unprocessable_entity
+
+    respond_to do |format|
+      if @answer.save
+        format.turbo_stream { render turbo_stream: turbo_stream.append("answers", partial: "answers/answer", locals: { answer: @answer }) }
+      else
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("answer_form", partial: "answers/form", locals: { question: @question, answer: @answer }), status: :unprocessable_entity }
+      end
     end
   end
 
@@ -30,7 +33,7 @@ class AnswersController < ApplicationController
   def destroy
     @answer.destroy
 
-    redirect_to @question, notice:  "Your answer was successfully deleted", status: :see_other
+    redirect_to @question, notice: "Your answer was successfully deleted", status: :see_other
   end
 
   private

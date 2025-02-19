@@ -16,7 +16,7 @@ feature 'User can create an answer to the question', %q(
     end
 
     scenario 'Authenticated user asks a question' do
-      fill_in 'Body', with: 'Question answer'
+      fill_in 'Your Answer', with: 'Question answer'
       click_on 'Answer'
 
       expect(page).to have_content 'Your answer successfully created'
@@ -33,7 +33,8 @@ feature 'User can create an answer to the question', %q(
   scenario 'Unauthenticated user asks a question' do
     visit questions_path
     click_on 'Show'
-    fill_in 'Body', with: 'Question answer'
+
+    fill_in 'Your Answer', with: 'Question answer'
     click_on 'Answer'
 
     expect(page).to have_current_path(new_user_session_path)

@@ -24,23 +24,29 @@ RSpec.describe AnswersController, type: :controller do
 
     context 'with valid attributes' do
       it 'saves new answer in the database' do
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer) } }.to change(Answer, :count).by(1)
+        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer), format: :turbo_stream } }.to change(Answer, :count).by(1)
       end
 
-      it 'redirect to question show view' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer) }
-        expect(response).to redirect_to assigns(:question)
+      it 'responds with success and appends the answer to the answers list' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer), format: :turbo_stream }
+        expect(response.body).to include('<turbo-stream action="append" target="answers">')
+        expect(response).to have_http_status(:ok)
       end
     end
 
     context 'with invalid attributes' do
       it 'does note save the question' do
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) } }
+        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer), format: :turbo_stream } }
       end
 
-      it 're-render new view' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) }
-        expect(response).to render_template 'questions/show'
+      it 'returns unprocessable_entity status' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer), format: :turbo_stream }
+        expect(response).to have_http_status(422)
+      end
+
+      it 'replaces the answer form with errors on invalid submission' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer), format: :turbo_stream }
+        expect(response.body).to include('<turbo-stream action="replace" target="answer_form">')
       end
     end
   end
