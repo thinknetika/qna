@@ -1,13 +1,8 @@
-h1= @question.title
-p= @question.body
-
-- if current_user&.owns?(@question)
-  = link_to 'Delete question', question_path(@question),
-          method: :delete,
-          data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }
+= turbo_frame_tag @question
+= render @question
 
 div id="answers"
   = render partial: 'answers/answer', collection: @answers
 
-div id="answer_form"
+- if user_signed_in?
   = render partial: 'answers/form', locals: { question: @question, answer: @answer }

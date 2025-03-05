@@ -1,3 +1,5 @@
+require 'faker'
+
 FactoryBot.define do
   sequence :email do |n|
     "user#{n}@test.com"
@@ -5,7 +7,8 @@ FactoryBot.define do
 
   factory :user do
     email
-    password { '12345678' }
-    password_confirmation { '12345678' }
+    password { Faker::Internet.password(min_length: 10, max_length: 20, mix_case: true, special_characters: true) }
+    password_confirmation { password }
   end
 end
+

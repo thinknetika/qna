@@ -1,7 +1,7 @@
 class QuestionsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
   before_action :set_question, only: %i[show edit update destroy]
-  before_action :authorize_question!, only: %i[update destroy]
+  before_action -> { authorize_user!(@question) }, only: %i[edit update destroy]
 
   def index
     @questions = Question.all
@@ -30,9 +30,8 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-      redirect_to @question
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -50,11 +49,5 @@ class QuestionsController < ApplicationController
 
   def question_params
     params.require(:question).permit(:title, :body)
-  end
-
-  def authorize_question!
-    unless current_user&.owns?(@question)
-      redirect_to questions_path(@question), alert: "You are not authorized to perform this action.", status: :see_other
-    end
   end
 end
