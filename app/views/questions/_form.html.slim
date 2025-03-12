@@ -1,13 +1,14 @@
 = turbo_frame_tag question do
   = form_with model: question do |form|
     div data-question-form-target="errors"
-      = render 'shared/errors', resource: @question
+      = render 'shared/errors', resource: question
 
     br
+    = form.hidden_field :source_view, value: source_view
     = form.label :title
     = form.text_field :title
     br
     = form.label :body
     = form.text_area :body
     br
-    = form.submit 'Submit'
+    = form.submit 'Post question'

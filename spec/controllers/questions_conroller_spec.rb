@@ -49,12 +49,14 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'with valid attributes' do
       it 'saves new question in the database' do
-        expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
+        expect {
+          post :create, params: { question: attributes_for(:question), format: :turbo_stream }
+        }.to change(Question, :count).by(1)
       end
 
-      it 'redirect to show view' do
-        post :create, params: { question: attributes_for(:question) }
-        expect(response).to redirect_to assigns(:question)
+      it 'renders create.turbo_stream template' do
+        post :create, params: { question: attributes_for(:question), format: :turbo_stream }
+        expect(response).to render_template('questions/create')
       end
     end
 

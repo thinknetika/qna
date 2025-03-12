@@ -1,3 +1,6 @@
-p= link_to 'Ask question', new_question_path
+= turbo_frame_tag 'new_question'
+  = render 'questions/shared/new_question'
 
-= render @questions
+div id="questions"
+  - @questions.each do |question|
+    = render partial: 'questions/question_index', locals: { question: question }

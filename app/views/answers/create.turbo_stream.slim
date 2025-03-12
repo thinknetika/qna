@@ -1,1 +1,2 @@
-= turbo_stream.before Answer.new, render(@answer)
+= turbo_stream.update 'new_answer',  partial: 'answers/shared/new_answer'
+= turbo_stream.append 'answers',  partial: 'answers/answer', locals: { answer: @answer }

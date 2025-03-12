@@ -1,8 +1,8 @@
-= turbo_frame_tag @question
-= render @question
+= render partial: 'questions/question_show', locals: { question: @question }
 
 div id="answers"
-  = render partial: 'answers/answer', collection: @answers
+  = render partial: 'answers/answer', collection: @question.answers
 
 - if user_signed_in?
-  = render partial: 'answers/form', locals: { question: @question, answer: @answer }
+  = turbo_frame_tag 'new_answer'
+    = render partial: 'answers/shared/new_answer'
