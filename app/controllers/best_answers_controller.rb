@@ -5,7 +5,8 @@ class BestAnswersController < ApplicationController
   before_action -> { authorize_user!(@question) }
 
   def create
-    @previous_best_answer = @question.best_answer
+    @previous_best_answer = @question.best_answer if @question.best_answer
+
     @question.best_answer_id = @answer.id
     @question.save!
   end

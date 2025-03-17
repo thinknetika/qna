@@ -1,2 +1,3 @@
-= turbo_stream.replace @previous_best_answer, partial: 'answers/answer', locals: { answer: @previous_best_answer }
+-if @previous_best_answer
+  = turbo_stream.replace @previous_best_answer, partial: 'answers/answer', locals: { answer: @previous_best_answer }
 = turbo_stream.replace @answer, partial: 'answers/answer', locals: { answer: @answer }
