@@ -1,1 +1,2 @@
-= link_to 'Post answer', new_question_answer_path(@question)
+= turbo_frame_tag 'new_answer'
+  = link_to 'Post answer', new_question_answer_path(@question), data: {turbo_stream: true}

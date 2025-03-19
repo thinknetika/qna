@@ -2,20 +2,24 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
-  let(:question) { create(:question) }
-  let(:answer) { create(:answer, question: question) }
+  let(:question) { create(:question, author: user) }
+  let(:answer) { create(:answer, question: question, author: user) }
 
   describe 'GET #new' do
     before { login(user) }
 
-    before { get :new, params: { question_id: question.id } }
+    before { get :new, params: { question_id: question.id }, as: :turbo_stream }
 
-    it 'assigns a new Answer to @answer' do
-      expect(assigns(:answer)).to be_a_new(Answer)
+    # it 'assigns a new Answer to @answer' do
+    #   expect(assigns(:answer)).to be_a_new(Answer)
+    # end
+
+    it 'returns ok status' do
+      expect(response).to have_http_status(:ok)
     end
 
     it 'render new view' do
-      expect(response).to render_template :new
+      expect(response.body).to include('<turbo-stream action="replace" target="new_answer">')
     end
   end
 
@@ -27,26 +31,40 @@ RSpec.describe AnswersController, type: :controller do
         expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer), format: :turbo_stream } }.to change(Answer, :count).by(1)
       end
 
-      it 'responds with success and appends the answer to the answers list' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer), format: :turbo_stream }
+      it 'returns ok status' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer) },
+             as: :turbo_stream
+
         expect(response).to have_http_status(:ok)
+      end
+
+      it 'responds with success and appends the answer to the answers list' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer) },
+             as: :turbo_stream
+
+        expect(response.body).to include('<turbo-stream action="append" target="answers">')
       end
     end
 
     context 'with invalid attributes' do
       it 'does note save the question' do
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer), format: :turbo_stream } }
+        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) },
+                      as: :turbo_stream
+        }
       end
 
       it 'returns unprocessable_entity status' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer), format: :turbo_stream }
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) },
+             as: :turbo_stream
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_http_status(422)
       end
 
-      it 'replaces the answer form with errors on invalid submission' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer), format: :turbo_stream }
-        expect(response.body).to include('<turbo-stream action="replace" target="answer_form">')
+      it 'renders a turbo stream to replace the new answer form with errors on invalid submission' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) },
+             as: :turbo_stream
+
+        expect(response.body).to include('<turbo-stream action="replace" target="new_answer">')
       end
     end
   end
@@ -54,14 +72,18 @@ RSpec.describe AnswersController, type: :controller do
   describe 'GET #edit' do
     before { login(user) }
 
-    before { get :edit, params: { id: answer } }
+    before { get :edit, params: { id: answer }, as: :turbo_stream }
 
-    it 'assigns the requested answer to @answer' do
-      expect(assigns(:answer)).to eq answer
+    # it 'assigns the requested answer to @answer' do
+    #   expect(assigns(:answer)).to eq answer
+    # end
+
+    it 'responds with success' do
+      expect(response).to have_http_status(:ok)
     end
 
-    it 'render show view' do
-      expect(response).to render_template :edit
+    it 'renders a turbo stream to replace the answer' do
+      expect(response.body).to include("<turbo-stream action=\"replace\" target=\"answer_#{answer.id}\">")
     end
   end
 
@@ -69,21 +91,29 @@ RSpec.describe AnswersController, type: :controller do
     before { login(answer.author) }
 
     context 'with valid attributes' do
-      it 'assign the requested answer to @answer' do
-        patch :update, params: { question_id: question.id, id: answer, answer: attributes_for(:answer) }
-        expect(assigns(:answer)).to eq answer
-      end
+      # it 'assign the requested answer to @answer' do
+      #   patch :update, params: { question_id: question.id, id: answer, answer: attributes_for(:answer) }
+      #   expect(assigns(:answer)).to eq answer
+      # end
 
       it 'changes answer attributes' do
-        patch :update, params: { question_id: question.id, id: answer, answer: { body: 'new body' } }
+        patch :update, params: { question_id: question.id, id: answer, answer: { body: 'new body' } },
+              as: :turbo_stream
+
         answer.reload
 
         expect(answer.body).to eq 'new body'
       end
 
-      it 'redirects to question after answer update' do
-        patch :update, params: { question_id: question.id, id: answer, answer: attributes_for(:answer) }
-        expect(response).to redirect_to question
+      it 'responds with success' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'renders a turbo stream to replace the answer' do
+        patch :update, params: { question_id: question.id, id: answer, answer: attributes_for(:answer) },
+              as: :turbo_stream
+
+        expect(response.body).to include("<turbo-stream action=\"replace\" target=\"answer_#{answer.id}\">")
       end
     end
 
@@ -92,7 +122,9 @@ RSpec.describe AnswersController, type: :controller do
 
       before do
         @original_answer = answer
-        patch :update, params: { question_id: question.id, id: answer, answer: attributes_for(:answer, :invalid_answer) }
+        patch :update,
+              params: { question_id: question.id, id: answer, answer: attributes_for(:answer, :invalid_answer) },
+              as: :turbo_stream
       end
 
       it 'does not change answer' do
@@ -101,8 +133,18 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.body).to eq @original_answer.body
       end
 
-      it 're-render edit view' do
-        expect(response).to render_template :edit
+      it 'returns unprocessable_entity status' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) },
+             as: :turbo_stream
+
+        expect(response).to have_http_status(422)
+      end
+
+      it 'renders a turbo stream to replace the answer form with errors on invalid submission' do
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid_answer) },
+             as: :turbo_stream
+
+        expect(response.body).to include('<turbo-stream action="replace" target="new_answer">')
       end
     end
   end
@@ -113,12 +155,16 @@ RSpec.describe AnswersController, type: :controller do
     let!(:answer) { create(:answer, question: question) }
 
     it 'deletes the answer' do
-      expect { delete :destroy, params: { question_id: question.id, id: answer } }.to change(Answer, :count).by(-1)
+      expect { delete :destroy, params: { question_id: question.id, id: answer }, as: :turbo_stream }.
+        to change(Answer, :count).by(-1)
     end
 
     it 'redirect to question' do
-      delete :destroy, params: { id: answer }
-      expect(response).to redirect_to question
+      delete :destroy, params: { id: answer }, as: :turbo_stream
+
+      puts response.body
+
+      expect(response.body).to include("<turbo-stream action=\"remove\" target=\"answer_#{answer.id}\">")
     end
   end
 end

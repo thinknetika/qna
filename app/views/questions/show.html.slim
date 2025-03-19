@@ -1,8 +1,7 @@
 = render partial: 'questions/question_show', locals: { question: @question }
 
-div id="answers" data-controller="answer-order" data-answer-order-target="answersContainer"
+div id="answers"
   = render partial: 'answers/answer', collection: @question.answers
 
 - if user_signed_in?
-  = turbo_frame_tag 'new_answer'
-    = render partial: 'answers/shared/new_answer'
+  = render partial: 'answers/shared/new_answer'

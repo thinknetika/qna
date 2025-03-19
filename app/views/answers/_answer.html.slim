@@ -2,7 +2,7 @@
   p= answer.body
 
   - if author_of?(answer)
-    = link_to 'Edit', edit_answer_path(answer)
+    = link_to 'Edit', edit_answer_path(answer), data: {turbo_stream: true}
     = link_to 'Delete', answer_path(answer),
           method: :delete,
           data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }

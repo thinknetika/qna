@@ -13,7 +13,7 @@ class AnswersController < ApplicationController
 
     if @answer.save
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
