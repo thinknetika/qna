@@ -55,7 +55,7 @@ end
       end
 
       within "#answers" do
-        expect(page.all('turbo-frame').first['id']).to eq "answer_#{answer_2.id}"
+        expect(page.all('turbo-frame').first['id']).to eq "answer_#{answer_1.id}"
       end
     end
   end

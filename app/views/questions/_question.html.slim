@@ -1,0 +1,11 @@
+= turbo_frame_tag question
+  h4= question.title
+  p= question.body
+
+  - if @source_view == "index"
+    = link_to 'Show', question_path(question), data: { turbo: false }
+
+  - if author_of?(question)
+    = link_to 'Edit', edit_question_path(question, source_view: @source_view), data: {turbo_stream: true}
+
+    = delete_link_with_conditional_turbo_frame(question, @source_view)

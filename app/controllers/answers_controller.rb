@@ -12,6 +12,7 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
 
     if @answer.save
+      turbo_stream
     else
       render :new, status: :unprocessable_entity
     end
@@ -21,6 +22,7 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
+      turbo_stream
     else
       render :edit
     end

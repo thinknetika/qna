@@ -1,2 +1,4 @@
 = turbo_stream.update 'new_question',  partial: 'questions/shared/new_question'
-= turbo_stream.prepend 'questions',  partial: 'questions/question_index', locals: { question: @question }
+= turbo_stream.prepend 'questions',
+        partial: 'questions/question',
+        locals: { question: @question, source_view: @source_view  }

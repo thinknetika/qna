@@ -1,14 +1,17 @@
 class QuestionsController < ApplicationController
   skip_before_action :authenticate_user!, only: %i[index show]
   before_action :set_question, only: %i[show edit update destroy]
-  before_action :set_view_source, only: %i[new edit update]
+  before_action :set_view_source, only: %i[create edit update destroy]
   before_action -> { authorize_user!(@question) }, only: %i[edit update destroy]
 
   def index
+    @source_view = "index"
     @questions = Question.all
   end
 
-  def show; end
+  def show
+    @source_view = "show"
+  end
 
   def new
     @question = Question.new
@@ -18,6 +21,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
+      turbo_stream
     else
       render :new, status: :unprocessable_content
     end
@@ -27,11 +31,7 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-      if @source_view == "index"
-        redirect_to questions_path
-      else
-        redirect_to question_path(@question)
-      end
+      turbo_stream
     else
         render :edit
     end
@@ -40,7 +40,7 @@ class QuestionsController < ApplicationController
   def destroy
     @question.destroy
 
-    redirect_to questions_path if params[:from] == "show"
+    redirect_to questions_path if @source_view == "show"
   end
 
   private

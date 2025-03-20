@@ -1,9 +1,0 @@
-= turbo_frame_tag question
-  h4= question.title
-  p= question.body
-
-  - if author_of?(question)
-    = link_to 'Edit', edit_question_path(question, source_view: 'show')
-    = button_to 'Delete', question_path(question, from: 'show'),
-            method: :delete,
-            data: { turbo: false, turbo_confirm: 'Are you sure' }

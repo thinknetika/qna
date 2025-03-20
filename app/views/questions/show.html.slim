@@ -1,4 +1,4 @@
-= render partial: 'questions/question_show', locals: { question: @question }
+= render partial: 'questions/question', locals: { question: @question, source_view: @source_view }
 
 div id="answers"
   = render partial: 'answers/answer', collection: @question.answers
