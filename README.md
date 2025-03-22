@@ -5,6 +5,8 @@ application up and running.
 
 Things you may want to cover:
 
+* test commit
+
 * Ruby version
 
 * System dependencies
