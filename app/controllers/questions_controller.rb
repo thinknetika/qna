@@ -36,9 +36,9 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-      @question.destroy
+    @question.destroy
 
-      redirect_to questions_path, notice: "Your question was successfully deleted", status: :see_other
+    redirect_to questions_path, notice: "Your question was successfully deleted", status: :see_other
   end
 
   private
