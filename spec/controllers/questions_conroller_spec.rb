@@ -2,45 +2,53 @@ require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
   let(:user) { create(:user) }
-  let(:questions) { create_list(:question, 3) }
-  let(:question) { create(:question) }
+  let!(:questions) { create_list(:question, 3, author: user) }
+  let!(:question) { create(:question, author: user) }
 
   describe 'GET #index' do
     before { get :index }
 
-    it 'get array of all questions' do
-      expect(assigns(:questions)).to match_array(questions)
+    it 'returns ok status' do
+      expect(response).to have_http_status(:ok)
     end
 
-    it 'render index view' do
-      expect(response).to render_template :index
+    it 'render index view tags' do
+      expect(response.body).to include('<turbo-frame id="new_question">')
+      expect(response.body).to include('</turbo-frame><div id="questions">')
+    end
+
+    it 'render list of questions' do
+      questions.each do |question|
+        expect(response.body).to include("<turbo-frame id=\"question_#{question.id}\">")
+      end
     end
   end
 
   describe "GET #show" do
     before { get :show, params: { id: question } }
 
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
+    it 'returns ok status' do
+      expect(response).to have_http_status(:ok)
     end
 
-    it 'render show view' do
-      get :show, params: { id: question }
-      expect(response).to render_template :show
+    it 'render question' do
+      expect(response.body).to include("<turbo-frame id=\"question_#{question.id}\">")
+      expect(response.body).to include(question.title)
+      expect(response.body).to include(question.body)
     end
   end
 
   describe 'GET #new' do
     before { login(user) }
 
-    before { get :new }
+    before { get :new, as: :turbo_stream }
 
-    it 'assigns a new Question to @question' do
-      expect(assigns(:question)).to be_a_new(Question)
+    it 'returns ok status' do
+      expect(response).to have_http_status(:ok)
     end
 
     it 'render new view' do
-      expect(response).to render_template :new
+      expect(response.body).to include('turbo-stream action="replace" target="new_question">')
     end
   end
 
@@ -49,38 +57,69 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'with valid attributes' do
       it 'saves new question in the database' do
-        expect { post :create, params: { question: attributes_for(:question) } }.to change(Question, :count).by(1)
+        expect {
+          post :create,
+               params: { question: attributes_for(:question) },
+               as: :turbo_stream
+        }.
+          to change(Question, :count).by(1)
       end
 
-      it 'redirect to show view' do
-        post :create, params: { question: attributes_for(:question) }
-        expect(response).to redirect_to assigns(:question)
+      it 'renders new question link' do
+        post :create, params: { question: attributes_for(:question) }, as: :turbo_stream
+
+        expect(response.body).to include('<turbo-stream action="update" target="new_question">')
+      end
+
+      it 'renders created question' do
+        post :create, params: { question: attributes_for(:question) }, as: :turbo_stream
+
+        expect(response.body).to include('<turbo-stream action="prepend" target="questions">')
       end
     end
 
     context 'with invalid attributes' do
       it 'does note save the question' do
-        expect { post :create, params: { question: attributes_for(:question, :invalid_question) } }
+        expect { post :create, params: { question: attributes_for(:question, :invalid_question) }, as: :turbo_stream }
       end
 
       it 're-render new view' do
-        post :create, params: { question: attributes_for(:question, :invalid_question) }
-        expect(response).to render_template :new
+        post :create, params: { question: attributes_for(:question, :invalid_question) }, as: :turbo_stream
+
+        expect(response.body).to include('turbo-stream action="replace" target="new_question">')
+      end
+
+      it 'expect errors' do
+        post :create, params: { question: attributes_for(:question, :invalid_question) }, as: :turbo_stream
+
+        expect(response.body).to include('<div data-question-form-target="errors">')
       end
     end
   end
 
   describe 'GET #edit' do
-    before { login(user) }
+    before { login(question.author) }
 
-    before { get :edit, params: { id: question } }
+    before { get :edit, params: { id: question }, as: :turbo_stream }
 
-    it 'assigns the requested question to @question' do
-      expect(assigns(:question)).to eq question
+    context 'from index view' do
+      it 'expect question' do
+        expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+      end
+
+      it 'expect form' do
+        expect(response.body).to include("<form action=\"/questions/4\"")
+      end
     end
 
-    it 'render show view' do
-      expect(response).to render_template :edit
+    context 'from show view' do
+      it 'expect question' do
+        expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+      end
+
+      it 'expect form' do
+        expect(response.body).to include("<form action=\"/questions/#{question.id}\"")
+      end
     end
   end
 
@@ -88,40 +127,108 @@ RSpec.describe QuestionsController, type: :controller do
     before { login(question.author) }
 
     context 'with valid attributes' do
-      it 'assign the requested question to @question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(assigns(:question)).to eq question
+      before do
+        patch :update,
+              params: { id: question, question: { title: 'new title', body: 'new body' } },
+              as: :turbo_stream
       end
 
-      it 'changes question attributes' do
-        patch :update, params: { id: question, question: { title: 'new title', body: 'new body' } }
-        question.reload
+      context 'from index view' do
+        it 'changes question attributes' do
+          question.reload
 
-        expect(question.title).to eq 'new title'
-        expect(question.body).to eq 'new body'
+          expect(question.title).to eq 'new title'
+          expect(question.body).to eq 'new body'
+        end
+
+        it 'responds with success' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'response updated question' do
+          expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+        end
       end
 
-      it 'redirects to updated question' do
-        patch :update, params: { id: question, question: attributes_for(:question) }
-        expect(response).to redirect_to question
+      context 'from show view' do
+        it 'changes question attributes' do
+          question.reload
+
+          expect(question.title).to eq 'new title'
+          expect(question.body).to eq 'new body'
+        end
+
+        it 'response updated question' do
+          patch :update, params: { id: question, question: attributes_for(:question) }, as: :turbo_stream
+
+          expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+        end
       end
     end
 
     context 'with invalid attributes' do
       before do
         @original_question = question
-        patch :update, params: { id: question, question: attributes_for(:question, :invalid_question) }
+        patch :update,
+              params: {
+                id: question,
+                question: attributes_for(:question, :invalid_question) },
+              as: :turbo_stream
       end
 
-      it 'does not change question' do
-        question.reload
+      context 'from index view' do
+        it 'does not change question' do
+          question.reload
 
-        expect(question.title).to eq @original_question.title
-        expect(question.body).to eq @original_question.body
+          expect(question.title).to eq @original_question.title
+          expect(question.body).to eq @original_question.body
+        end
+
+        it 'response updated question' do
+          expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+        end
+
+        it 'returns unprocessable_entity status' do
+          expect(response).to have_http_status(422)
+        end
+
+        it 'renders a turbo stream to replace the question' do
+          expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+        end
+
+        it 'renders a form of edit question' do
+          expect(response.body).to include("form")
+        end
+
+        it 'renders a errors' do
+          expect(response.body).to include("error(s) detected")
+        end
       end
 
-      it 're-render edit show' do
-        expect(response).to render_template :edit
+      context 'from show view' do
+        it 'does not change question' do
+          question.reload
+
+          expect(question.title).to eq @original_question.title
+          expect(question.body).to eq @original_question.body
+        end
+
+        it 'returns unprocessable_entity status' do
+          expect(response).to have_http_status(422)
+        end
+
+
+        it 'renders a turbo stream to replace the question' do
+          expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")
+        end
+
+        it 'renders a form of edit question' do
+          expect(response.body).to include("form")
+        end
+
+        it 'renders a errors' do
+          expect(response.body).to include("error(s) detected")
+        end
       end
     end
   end
@@ -131,13 +238,22 @@ RSpec.describe QuestionsController, type: :controller do
 
     let!(:question) { create(:question) }
 
-    it 'deletes the question' do
-      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
+    context 'from index view' do
+      it 'deletes the question' do
+        expect { delete :destroy, params: { id: question }, as: :turbo_stream }.to change(Question, :count).by(-1)
+      end
+
+      it 'expect turbo with remove question' do
+        delete :destroy, params: { id: question }, as: :turbo_stream
+
+        expect(response.body).to include("<turbo-stream action=\"remove\" target=\"question_#{question.id}\"></turbo-stream>")
+      end
     end
 
-    it 'redirect to index' do
-      delete :destroy, params: { id: question }
-      expect(response).to redirect_to questions_path
+    context 'from show view' do
+      it 'deletes the question' do
+        expect { delete :destroy, params: { id: question }, as: :turbo_stream }.to change(Question, :count).by(-1)
+      end
     end
   end
 end

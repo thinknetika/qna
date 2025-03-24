@@ -1,6 +1,15 @@
-p= answer.body
+= turbo_frame_tag answer
+  p= answer.body
 
-- if current_user&.owns?(answer)
-  = link_to 'Delete answer', answer_path(answer),
-          method: :delete,
-          data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }
+  - if author_of?(answer)
+    = link_to 'Edit', edit_answer_path(answer), data: {turbo_stream: true}
+    = link_to 'Delete', answer_path(answer),
+            method: :delete,
+            data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }
+
+  - if answer == @question.best_answer
+    = hidden_field_tag 'best_answer'
+  - else
+    - if author_of?(@question)
+      = button_to "Mark as best", best_answers_path(answer_id: answer.id), method: :post,
+              data: { turbo_method: :post }
