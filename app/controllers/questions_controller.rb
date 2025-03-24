@@ -1,15 +1,15 @@
 class QuestionsController < ApplicationController
+  include QuestionsHelper
+
   skip_before_action :authenticate_user!, only: %i[index show]
   before_action :set_question, only: %i[show edit update destroy]
-  before_action :authorize_question!, only: %i[update destroy]
+  before_action -> { authorize_user!(@question) }, only: %i[edit update destroy]
 
   def index
     @questions = Question.all
   end
 
-  def show
-    @answers = @question.answers
-  end
+  def show; end
 
   def new
     @question = Question.new
@@ -19,7 +19,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
-      redirect_to @question, notice: "Your question successfully created", status: :see_other
+      turbo_stream
     else
       render :new, status: :unprocessable_content
     end
@@ -29,16 +29,20 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-      redirect_to @question
+      turbo_stream
     else
-      render :edit
+      render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
-      @question.destroy
+    @question.destroy
 
-      redirect_to questions_path, notice: "Your question was successfully deleted", status: :see_other
+    if show_view(@question)
+      redirect_to (questions_path), status: :see_other
+    else
+      turbo_stream
+    end
   end
 
   private

@@ -20,12 +20,12 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
   gem "factory_bot_rails"
   gem "faker"
-  gem "rails-controller-testing"
   gem "sqlite3"
 end
 
 group :development do
   gem "web-console"
+  gem "pry-rails"
 end
 
 group :test do

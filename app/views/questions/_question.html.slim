@@ -1,7 +1,10 @@
-h4= question.title
-p= question.body
+= turbo_frame_tag question
+  h4= question.title
+  p= question.body
 
-= link_to 'Show', question_path(question)
-= link_to 'Delete', question_path(question),
-                          method: :delete,
-                          data: { turbo_method: :delete, turbo_confirm: 'Are you sure' }
+  - unless show_view(question)
+    = link_to 'Show', question_path(question), data: { turbo: false }
+
+  - if author_of?(question)
+    = link_to 'Edit', edit_question_path(question), data: {turbo_stream: true}
+    = delete_link_with_conditional_turbo_frame(question)
