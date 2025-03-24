@@ -1,6 +1,6 @@
 = render partial: 'questions/question', locals: { question: @question }
 
-div id="answers"
+div id="answers" data-controller="answer-order" data-answer-order-target="answersContainer"
   = render partial: 'answers/answer', collection: @question.answers
 
 - if user_signed_in?
