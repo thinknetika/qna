@@ -5,6 +5,6 @@
   - unless show_view(question)
     = link_to 'Show', question_path(question), data: { turbo: false }
 
-  - if author_of?(question)
+  - if current_user&.owns?(question)
     = link_to 'Edit', edit_question_path(question), data: {turbo_stream: true}
     = delete_link_with_conditional_turbo_frame(question)
