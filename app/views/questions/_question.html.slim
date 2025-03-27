@@ -1,10 +1,14 @@
-= turbo_frame_tag question
-  h4= question.title
-  p= question.body
+= turbo_frame_tag question do
+  .card.mb-3
+    .card-body
+      .d-flex.justify-content-between.align-items-center
+        div
+          h4.card-title = question.title
+          p.card-text = question.body
+        div
+          - unless show_view(question)
+            = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
 
-  - unless show_view(question)
-    = link_to 'Show', question_path(question), data: { turbo: false }
-
-  - if current_user&.owns?(question)
-    = link_to 'Edit', edit_question_path(question), data: {turbo_stream: true}
-    = delete_link_with_conditional_turbo_frame(question)
+          - if current_user&.owns?(question)
+            = link_to 'Edit', edit_question_path(question), data: {turbo_stream: true}, class: "btn btn-warning btn-sm ms-2"
+            = delete_link_with_conditional_turbo_frame(question, "btn btn-danger btn-sm ms-2")
