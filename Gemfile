@@ -1,12 +1,15 @@
 source "https://rubygems.org"
 
+gem "bootstrap"
 gem "bootsnap", require: false
 gem "devise"
+gem "image_processing", ">= 1.2"
 gem "importmap-rails"
 gem "jbuilder"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 gem "rails", "~> 7.2.2", ">= 7.2.2.1"
+gem "sassc-rails"
 gem "slim-rails"
 gem "sprockets-rails"
 gem "stimulus-rails"

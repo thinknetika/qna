@@ -1,13 +1,20 @@
 = turbo_frame_tag question do
-  = form_with model: question do |form|
-    div data-question-form-target="errors"
-      = render 'shared/errors', resource: question
+  .card.mb-3
+    .card-body
+      = form_with model: question, class: "row g-3" do |form|
+        div data-question-form-target="errors"
+          = render 'shared/errors', resource: question
 
-    br
-    = form.label :title
-    = form.text_field :title
-    br
-    = form.label :body
-    = form.text_area :body
-    br
-    = form.submit 'Post question'
+        .col-12
+          = form.label :title, class: "form-label"
+          = form.text_field :title, class: "form-control"
+
+        .col-12
+          = form.label :body, class: "form-label"
+          = form.text_area :body, class: "form-control", rows: 5
+
+        .col-12
+          = form.file_field :files, multiple: true
+
+        .col-12
+          = form.submit 'Post question', class: "btn btn-primary"
