@@ -5,6 +5,13 @@
         div
           h4.card-title = question.title
           p.card-text = question.body
+
+        div.attached-files.mt-2
+          - if question.files.attached?
+            .d-flex.flex-wrap
+              - question.files.each do |file|
+                = render partial: 'questions/files', locals: { file: file, question: question }
+
         div
           - unless show_view(question)
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"

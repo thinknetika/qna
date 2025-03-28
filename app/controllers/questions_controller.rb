@@ -2,8 +2,8 @@ class QuestionsController < ApplicationController
   include QuestionsHelper
 
   skip_before_action :authenticate_user!, only: %i[index show]
-  before_action :set_question, only: %i[show edit update destroy]
-  before_action -> { authorize_user!(@question) }, only: %i[edit update destroy]
+  before_action :set_question, only: %i[show edit update destroy destroy_file]
+  before_action -> { authorize_user!(@question) }, only: %i[edit update destroy destroy_file]
 
   def index
     @questions = Question.all
@@ -45,14 +45,26 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def destroy_file
+    @file = @question&.files.find_by(id: params[:file_id])
+
+    if @file
+        @file.purge
+
+        turbo_stream
+    else
+      redirect_to @question, status: :see_other, alert: "Файл не найден."
+    end
+  end
+
   private
 
   def set_question
-    @question = Question.find(params[:id])
+    @question = Question.with_attached_files.find(params[:id])
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, files: [])
   end
 
   def authorize_question!

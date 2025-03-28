@@ -15,6 +15,7 @@ RSpec.describe QuestionsController, type: :controller do
     it 'render index view tags' do
       expect(response.body).to include('<turbo-frame id="new_question">')
       expect(response.body).to include('</turbo-frame><div id="questions">')
+      expect(response.body).to include('<div class="attached-files')
     end
 
     it 'render list of questions' do
@@ -216,7 +217,6 @@ RSpec.describe QuestionsController, type: :controller do
         it 'returns unprocessable_entity status' do
           expect(response).to have_http_status(422)
         end
-
 
         it 'renders a turbo stream to replace the question' do
           expect(response.body).to include("<turbo-stream action=\"replace\" target=\"question_#{question.id}\">")

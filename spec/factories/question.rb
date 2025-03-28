@@ -8,4 +8,14 @@ FactoryBot.define do
   trait :invalid_question do
     title { nil }
   end
+
+  trait :with_files do
+    after(:build) do |question, evaluator|
+      files = [
+        Rack::Test::UploadedFile.new(Rails.root.join('spec', 'rails_helper.rb'), 'text/plain'),
+        Rack::Test::UploadedFile.new(Rails.root.join('spec', 'spec_helper.rb'), 'text/plain')
+      ]
+      evaluator.files = files
+    end
+  end
 end

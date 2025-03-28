@@ -10,7 +10,7 @@ feature 'User can update answer', js: true do
 
   given(:user) { create(:user) }
   given(:another_user) { create(:user) }
-  given!(:question) { create(:question, author_id: user.id) }
+  given!(:question) { create(:question, :with_files, author_id: user.id) }
 
   describe 'Authenticated user is author', js: true do
     background do
@@ -48,6 +48,15 @@ feature 'User can update answer', js: true do
         expect(page).to have_content "Title can't be blank"
         expect(page).to have_content "Body can't be blank"
       end
+
+      scenario 'On questions/show can edit with add new attached files' do
+        attach_file 'question[files][]', %W[#{Rails.root}/spec/features/sign_in_spec.rb #{Rails.root}/spec/features/sign_out_spec.rb]
+
+        click_on 'Post question'
+
+        expect(page).to have_content 'sign_in_spec.rb'
+        expect(page).to have_content 'sign_out_spec'
+      end
     end
 
     describe 'On questions/index' do
@@ -82,6 +91,15 @@ feature 'User can update answer', js: true do
         expect(page).to have_content "Title can't be blank"
         expect(page).to have_content "Body can't be blank"
       end
+
+      scenario 'On questions/index can edit with add new attached files' do
+        attach_file 'question[files][]', %W[#{Rails.root}/spec/features/sign_in_spec.rb #{Rails.root}/spec/features/sign_out_spec.rb]
+
+        click_on 'Post question'
+
+        expect(page).to have_content 'sign_in_spec.rb'
+        expect(page).to have_content 'sign_out_spec'
+      end
     end
   end
 
@@ -93,23 +111,53 @@ feature 'User can update answer', js: true do
     end
 
     describe 'On questions/show' do
-      scenario "Authenticated user can't see edit link if not author" do
+      background do
         visit question_path(question)
+      end
 
+      scenario "Authenticated user can't see edit link if not author" do
         expect(page).not_to have_link('Edit')
+      end
+
+      scenario 'On questions/index has not link to delete attached file' do
+        expect(page).to have_content 'rails_helper.rb'
+        expect(page).to have_content 'spec_helper.rb'
+
+        within "#attachment_#{question.files.first.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
+
+        within "#attachment_#{question.files.second.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
       end
     end
 
     describe 'On questions/index' do
-      scenario "Authenticated user can't see edit link if not author" do
+      background do
         visit questions_path
+      end
 
+      scenario "Authenticated user can't see edit link if not author" do
         expect(page).not_to have_link('Edit')
+      end
+
+      scenario 'On questions/index has not link to delete attached file' do
+        expect(page).to have_content 'rails_helper.rb'
+        expect(page).to have_content 'spec_helper.rb'
+
+        within "#attachment_#{question.files.first.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
+
+        within "#attachment_#{question.files.second.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
       end
     end
 
     scenario "Authenticated user can't access the edit page" do
-      visit edit_question_path(question, source_view: 'index')
+      visit edit_question_path(question)
 
       expect(page).to have_content 'You are not authorized to perform this action.'
       expect(page).to have_current_path(root_path)
@@ -118,18 +166,48 @@ feature 'User can update answer', js: true do
 
   describe 'Unauthenticated user' do
     describe 'On questions/show' do
-      scenario 'Unauthenticated user tries to edit a question' do
+      background do
         visit question_path(question)
+      end
 
+      scenario 'Unauthenticated user tries to edit a question' do
         expect(page).not_to have_link('Edit')
+      end
+
+      scenario 'On questions/show has not link to delete attached file' do
+        expect(page).to have_content 'rails_helper.rb'
+        expect(page).to have_content 'spec_helper.rb'
+
+        within "#attachment_#{question.files.first.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
+
+        within "#attachment_#{question.files.second.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
       end
     end
 
     describe 'On questions/index' do
-      scenario 'Unauthenticated user tries to edit a question' do
+      background do
         visit questions_path
+      end
 
+      scenario 'Unauthenticated user tries to edit a question' do
         expect(page).not_to have_link('Edit')
+      end
+
+      scenario 'On questions/index has not link to delete attached file' do
+        expect(page).to have_content 'rails_helper.rb'
+        expect(page).to have_content 'spec_helper.rb'
+
+        within "#attachment_#{question.files.first.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
+
+        within "#attachment_#{question.files.second.id}" do
+          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
+        end
       end
     end
   end
