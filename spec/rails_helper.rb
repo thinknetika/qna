@@ -24,6 +24,10 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.render_views = true
+
+  config.after(:all) do
+    FileUtils.rm_rf("#{Rails.root}/tmp/storage")
+  end
 end
 
 Shoulda::Matchers.configure do |config|

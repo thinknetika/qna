@@ -27,7 +27,7 @@ end
       end
 
       within "#answer_#{answer_1.id}" do
-        expect(page).to have_selector("turbo-frame[id='answer_#{answer_1.id}'] input[type='hidden'][id='best_answer']", visible: :hidden)
+        expect(page).to have_selector('span.text-success', text: 'Best answer')
       end
 
       within "#answers" do
@@ -50,7 +50,7 @@ end
       end
 
       within "#answer_#{answer_2.id}" do
-        expect(page).to have_selector("turbo-frame[id='answer_#{answer_2.id}'] input[type='hidden'][id='best_answer']", visible: :hidden)
+        expect(page).to have_selector('span.text-success', text: 'Best answer')
       end
 
       within "#answers" do
