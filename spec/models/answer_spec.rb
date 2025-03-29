@@ -11,5 +11,11 @@ RSpec.describe Answer, type: :model do
     context "answers" do
       it { should belong_to(:question) }
     end
+
+    context "files" do
+      it 'have one attached file' do
+        expect(Answer.new.files).to be_an_instance_of(ActiveStorage::Attached::Many)
+      end
+    end
   end
 end

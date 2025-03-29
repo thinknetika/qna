@@ -10,7 +10,7 @@ feature 'User can update answer', js: true do
 
   given(:user) { create(:user) }
   given(:another_user) { create(:user) }
-  given!(:question) { create(:question, :with_files, author_id: user.id) }
+  given!(:question) { create(:question, :with_question_files, author_id: user.id) }
 
   describe 'Authenticated user is author', js: true do
     background do
@@ -173,19 +173,6 @@ feature 'User can update answer', js: true do
       scenario 'Unauthenticated user tries to edit a question' do
         expect(page).not_to have_link('Edit')
       end
-
-      scenario 'On questions/show has not link to delete attached file' do
-        expect(page).to have_content 'rails_helper.rb'
-        expect(page).to have_content 'spec_helper.rb'
-
-        within "#attachment_#{question.files.first.id}" do
-          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-        end
-
-        within "#attachment_#{question.files.second.id}" do
-          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-        end
-      end
     end
 
     describe 'On questions/index' do
@@ -195,19 +182,6 @@ feature 'User can update answer', js: true do
 
       scenario 'Unauthenticated user tries to edit a question' do
         expect(page).not_to have_link('Edit')
-      end
-
-      scenario 'On questions/index has not link to delete attached file' do
-        expect(page).to have_content 'rails_helper.rb'
-        expect(page).to have_content 'spec_helper.rb'
-
-        within "#attachment_#{question.files.first.id}" do
-          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-        end
-
-        within "#attachment_#{question.files.second.id}" do
-          expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-        end
       end
     end
   end

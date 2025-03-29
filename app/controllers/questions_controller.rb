@@ -47,14 +47,9 @@ class QuestionsController < ApplicationController
 
   def destroy_file
     @file = @question&.files.find_by(id: params[:file_id])
+    @file.purge
 
-    if @file
-        @file.purge
-
-        turbo_stream
-    else
-      redirect_to @question, status: :see_other, alert: "Файл не найден."
-    end
+    turbo_stream
   end
 
   private

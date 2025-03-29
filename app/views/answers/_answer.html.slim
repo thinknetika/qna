@@ -7,6 +7,12 @@
             div
               p.card-text = answer.body
 
+            div.attached-files.mt-2
+              - if answer.files.attached?
+                .d-flex.flex-wrap
+                  - answer.files.each do |file|
+                    = render partial: 'layouts/files', locals: { file: file, source: answer }
+
             div
               .d-flex.align-items-center
                 - if current_user&.owns?(answer)

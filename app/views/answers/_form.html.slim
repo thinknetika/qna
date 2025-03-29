@@ -1,7 +1,15 @@
 = turbo_frame_tag answer
-  = form_with url: answer_form_url(answer, question), model: answer do |f|
-    = render 'shared/errors', resource: answer
+  .card.mb-3
+    .card-body
+      = form_with url: answer_form_url(answer, question), model: answer do |f|
+        = render 'shared/errors', resource: answer
 
-    = f.label :body, "Your Answer"
-    = f.text_area :body
-    = f.submit "Post Answer"
+        .col-12
+          = f.label :body, "Your Answer", class: "form-label"
+          = f.text_area :body, class: "form-control", rows: 2
+
+        .col-12
+          = f.file_field :files, multiple: true
+
+        .col-12
+          = f.submit "Post answer", class: "btn btn-primary"

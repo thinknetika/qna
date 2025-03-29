@@ -8,7 +8,7 @@ feature 'Author can delete his question', js: true do
   given(:user) { create(:user) }
   given(:another_user) { create(:user) }
 
-  given!(:question) { create(:question, :with_files, author_id: user.id) }
+  given!(:question) { create(:question, :with_question_files, author_id: user.id) }
 
   describe 'Authenticated author' do
     background do
