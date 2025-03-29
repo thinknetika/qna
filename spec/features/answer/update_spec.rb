@@ -10,7 +10,7 @@ feature 'User can update answer', js: true do
   given(:user) { create(:user) }
   given(:another_user) { create(:user) }
   given(:question) { create(:question, author_id: user.id) }
-  given!(:answer) { create(:answer, question_id: question.id, author_id: user.id) }
+  given!(:answer) { create(:answer, :with_answer_files, question_id: question.id, author_id: user.id) }
 
   describe 'Authenticated user is author' do
     background do
@@ -27,7 +27,7 @@ feature 'User can update answer', js: true do
     scenario 'Author can edit an answer' do
       within "#answer_#{answer.id}" do
         fill_in 'Your Answer', with: 'Another test answer body'
-        click_on 'Post Answer'
+        click_on 'Post answer'
       end
 
       expect(page).to have_content 'Another test answer body'
@@ -36,10 +36,21 @@ feature 'User can update answer', js: true do
     scenario 'Author can edit a answer with errors' do
       within "#answer_#{answer.id}" do
         fill_in 'Your Answer', with: ''
-        click_on 'Post Answer'
+        click_on 'Post answer'
       end
 
       expect(page).to have_content "Body can't be blank"
+    end
+
+    scenario 'Can edit with add new attached files' do
+      within "#answer_#{answer.id}" do
+        attach_file 'answer[files][]', %W[#{Rails.root}/spec/features/sign_in_spec.rb #{Rails.root}/spec/features/sign_out_spec.rb]
+
+        click_on 'Post answer'
+      end
+
+      expect(page).to have_content 'sign_in_spec.rb'
+      expect(page).to have_content 'sign_out_spec'
     end
   end
 

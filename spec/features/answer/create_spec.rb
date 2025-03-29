@@ -25,7 +25,7 @@ feature 'User can create an answer to the question', js: true do
       within "#new_answer" do
         fill_in 'Your Answer', with: 'Question answer'
 
-        click_on 'Post Answer'
+        click_on 'Post answer'
       end
 
       expect(page).to have_content 'Question answer'
@@ -36,10 +36,23 @@ feature 'User can create an answer to the question', js: true do
       within "#new_answer" do
         fill_in 'Your Answer', with: ''
 
-        click_on 'Post Answer'
+        click_on 'Post answer'
       end
 
       expect(page).to have_content "Body can't be blank"
+    end
+
+    scenario 'Authenticated user write answer with attached files' do
+      within "#new_answer" do
+        fill_in 'Your Answer', with: 'Question answer'
+
+        attach_file 'answer[files][]', %W[#{Rails.root}/spec/rails_helper.rb #{Rails.root}/spec/spec_helper.rb]
+
+        click_on 'Post answer'
+      end
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
     end
   end
 
@@ -47,7 +60,7 @@ feature 'User can create an answer to the question', js: true do
     scenario 'Unauthenticated user can not post answer' do
       visit question_path(question)
 
-      expect(page).not_to have_link('Post Answer')
+      expect(page).not_to have_link('Post answer')
     end
 
     scenario "Unauthenticated user can't access to the create new answer" do

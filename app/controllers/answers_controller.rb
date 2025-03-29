@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
   before_action :set_question, only: %i[new create]
-  before_action :set_answer, only: %i[edit update destroy]
+  before_action :set_answer, only: %i[edit update destroy destroy_file]
   before_action :set_question_from_answer, only: %i[update destroy]
   before_action -> { authorize_user!(@answer) }, only: %i[edit update destroy]
 
@@ -32,6 +32,13 @@ class AnswersController < ApplicationController
     @answer.destroy
   end
 
+  def destroy_file
+    @file = @answer&.files.find_by(id: params[:file_id])
+    @file.purge
+
+    turbo_stream
+  end
+
   private
 
   def set_question
@@ -47,6 +54,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body)
+    params.require(:answer).permit(:body, files: [])
   end
 end
