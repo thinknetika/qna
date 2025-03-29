@@ -14,7 +14,11 @@
           = form.text_area :body, class: "form-control", rows: 5
 
         .col-12
-          = form.file_field :files, multiple: true
+          div data-controller="upload"
+            = form.file_field :files,
+                    multiple: true,
+                    direct_upload: true,
+                    data: { upload_target: "input",  action: "change->upload#uploadFile" }
 
         .col-12
           = form.submit 'Post question', class: "btn btn-primary"
