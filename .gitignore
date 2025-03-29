@@ -45,3 +45,6 @@
 
 # Ignore sqlite files
 /identifier.sqlite
+
+# Ignore node modules
+/node_modules
