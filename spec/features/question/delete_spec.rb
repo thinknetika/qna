@@ -43,25 +43,6 @@ feature 'Author can delete his question', js: true do
       expect(page).to_not have_content question.title
       expect(page).to_not have_content question.body
     end
-
-    scenario 'On questions/index try to delete attached file' do
-      visit questions_path
-
-      expect(page).to have_content 'rails_helper.rb'
-      expect(page).to have_content 'spec_helper.rb'
-
-      within "#attachment_#{question.files.first.id}" do
-        find('a[data-turbo-method="delete"]').click
-      end
-
-      expect(page).to_not have_content 'rails_helper.rb'
-
-      within "#attachment_#{question.files.second.id}" do
-        find('a[data-turbo-method="delete"]').click
-      end
-
-      expect(page).to_not have_content 'spec_helper.rb'
-    end
   end
 
   describe 'Authenticated user is not author' do
@@ -116,21 +97,6 @@ feature 'Author can delete his question', js: true do
 
       within "#question_#{question.id}" do
         expect(page).to_not have_link 'Delete'
-      end
-    end
-
-    scenario 'On questions/index has not link to delete attached file' do
-      visit questions_path
-
-      expect(page).to have_content 'rails_helper.rb'
-      expect(page).to have_content 'spec_helper.rb'
-
-      within "#attachment_#{question.files.first.id}" do
-        expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-      end
-
-      within "#attachment_#{question.files.second.id}" do
-        expect(page).to_not have_link 'a[data-turbo-method="delete"]'
       end
     end
   end

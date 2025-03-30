@@ -6,4 +6,5 @@
       .small.text-muted.d-block.text-truncate = file.filename.to_s
       .small.text-muted.d-block = file_extension.upcase
     - if current_user&.owns?(source)
-      = render_file_with_deletion_link(file, source)
+      = link_to attachment_path(file), method: :delete, data: { turbo_method: :delete, confirm: "Вы уверены?" }, class: "position-absolute top-0 end-0 text-danger", style: "font-size: 0.8em;" do
+        i.fas.fa-times-circle
