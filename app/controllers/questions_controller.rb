@@ -2,8 +2,8 @@ class QuestionsController < ApplicationController
   include QuestionsHelper
 
   skip_before_action :authenticate_user!, only: %i[index show]
-  before_action :set_question, only: %i[show edit update destroy destroy_file]
-  before_action -> { authorize_user!(@question) }, only: %i[edit update destroy destroy_file]
+  before_action :set_question, only: %i[show edit update destroy]
+  before_action -> { authorize_user!(@question) }, only: %i[edit update destroy]
 
   def index
     @questions = Question.all
@@ -43,13 +43,6 @@ class QuestionsController < ApplicationController
     else
       turbo_stream
     end
-  end
-
-  def destroy_file
-    @file = @question&.files.find_by(id: params[:file_id])
-    @file.purge
-
-    turbo_stream
   end
 
   private

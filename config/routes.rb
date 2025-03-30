@@ -2,18 +2,13 @@ Rails.application.routes.draw do
   devise_for :users
 
   resources :questions do
-    member do
-      delete "file/:file_id", to: "questions#destroy_file", as: :delete_file
-    end
-
     resources :answers, except: %i[index show], shallow: true do
-      member do
-        delete "file/:file_id", to: "answers#destroy_file", as: :delete_file
-      end
     end
   end
 
   resources :best_answers, only: %i[create], path: :best_answer, as: :best_answers
+
+  resources :attachments, only: :destroy
 
   root to: "questions#index"
 end

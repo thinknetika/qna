@@ -29,24 +29,6 @@ feature 'Author can delete his answer', js: true do
       expect(page).to have_current_path(question_path(question))
       expect(page).to_not have_selector "#answer_#{answer.id}"
     end
-
-    scenario 'Authenticated author try to delete attached file' do
-      expect(page).to have_content 'rails_helper.rb'
-      expect(page).to have_content 'spec_helper.rb'
-
-      within "#attachment_#{answer.files.first.id}" do
-        find('a[data-turbo-method="delete"]').click
-      end
-
-      expect(page).to_not have_content 'rails_helper.rb'
-
-      within "#attachment_#{answer.files.second.id}" do
-        find('a[data-turbo-method="delete"]').click
-      end
-
-      expect(page).to_not have_content 'spec_helper.rb'
-    end
-
   end
 
   describe 'Authenticated not author' do
@@ -62,19 +44,6 @@ feature 'Author can delete his answer', js: true do
         expect(page).to_not have_link 'Delete'
       end
     end
-
-    scenario 'In answers has not link to delete attached file' do
-      expect(page).to have_content 'rails_helper.rb'
-      expect(page).to have_content 'spec_helper.rb'
-
-      within "#attachment_#{answer.files.first.id}" do
-        expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-      end
-
-      within "#attachment_#{answer.files.second.id}" do
-        expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-      end
-    end
   end
 
   describe 'Unauthenticated user' do
@@ -85,19 +54,6 @@ feature 'Author can delete his answer', js: true do
     scenario 'Unauthenticated user try to delete answer' do
       within "#answer_#{answer.id}" do
         expect(page).to_not have_link 'Delete'
-      end
-    end
-
-    scenario 'In answers has not link to delete attached file' do
-      expect(page).to have_content 'rails_helper.rb'
-      expect(page).to have_content 'spec_helper.rb'
-
-      within "#attachment_#{answer.files.first.id}" do
-        expect(page).to_not have_link 'a[data-turbo-method="delete"]'
-      end
-
-      within "#attachment_#{answer.files.second.id}" do
-        expect(page).to_not have_link 'a[data-turbo-method="delete"]'
       end
     end
   end
