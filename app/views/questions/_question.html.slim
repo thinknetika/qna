@@ -13,6 +13,10 @@
                 = render partial: 'layouts/files', locals: { file: file, source: question }
 
         div
+          - question.links&.each do |link|
+            = render partial: 'layouts/link', locals: { resource: link }
+
+        div
           - unless show_view(question)
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
 
