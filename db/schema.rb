@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_03_27_184559) do
+ActiveRecord::Schema[7.2].define(version: 2025_03_31_185236) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,6 +47,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_03_27_184559) do
     t.integer "author_id", null: false
     t.index ["author_id"], name: "index_answers_on_author_id"
     t.index ["question_id"], name: "index_answers_on_question_id"
+  end
+
+  create_table "links", force: :cascade do |t|
+    t.string "name"
+    t.string "url"
+    t.string "linkable_type"
+    t.integer "linkable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["linkable_type", "linkable_id"], name: "index_links_on_linkable"
   end
 
   create_table "questions", force: :cascade do |t|

@@ -13,6 +13,7 @@ class QuestionsController < ApplicationController
 
   def new
     @question = Question.new
+    @links = @question.links.new
   end
 
   def create
@@ -25,7 +26,9 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    @links = @question.links.presence || @question.links.new
+  end
 
   def update
     if @question.update(question_params)
@@ -52,7 +55,8 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [])
+    params.require(:question).permit(:title, :body, files: [],
+                                     links_attributes: [ :name, :url ])
   end
 
   def authorize_question!

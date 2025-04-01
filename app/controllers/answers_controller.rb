@@ -6,6 +6,7 @@ class AnswersController < ApplicationController
 
   def new
     @answer = @question.answers.new
+    @links = @answer.links.new
   end
 
   def create
@@ -18,7 +19,9 @@ class AnswersController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    @links = @answer.links.presence || @answer.links.new
+  end
 
   def update
     if @answer.update(answer_params)
@@ -47,6 +50,7 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [])
+    params.require(:answer).permit(:body, files: [],
+                                   links_attributes: [ :name, :url ])
   end
 end

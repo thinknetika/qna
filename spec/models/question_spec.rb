@@ -12,8 +12,14 @@ RSpec.describe Question, type: :model do
   end
 
   describe "associations" do
+    context 'links' do
+      it { should have_many(:links).dependent(:destroy) }
+      it { should accept_nested_attributes_for :links}
+    end
+
     context "answers" do
       it { should have_many(:answers).dependent(:destroy) }
+      it { should accept_nested_attributes_for :links }
     end
 
     context "files" do
