@@ -13,9 +13,9 @@
                   - answer.files.each do |file|
                     = render partial: 'layouts/files', locals: { file: file, source: answer }
 
-            div
-              - answer.links&.each do |link|
-                = render partial: 'layouts/link', locals: { resource: link }
+              div
+                - answer.links&.each do |link|
+                  = render partial: 'layouts/link', locals: { resource: link }
 
             div
               .d-flex.align-items-center
