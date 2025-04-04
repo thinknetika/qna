@@ -15,15 +15,35 @@
 
         .col-12
           p Links
-          = f.fields_for :links do |l|
-            .row
-              .col-md-6
-                = l.label :name, class: "form-label"
-                = l.text_field :name, class: "form-control"
+          div data-controller="nested-form" data-nested-form-association-name-value="links"
+            template data-nested-form-target="template"
+              .row.nested-fields
+                .col-md-6
+                  = label_tag :name, "Link Name", class: "form-label"
+                  = text_field_tag :name, nil, name: "question[links_attributes][NEW_CHILD_ID][name]", class: "form-control"
 
-              .col-md-6
-                = l.label :url, class: "form-label"
-                = l.text_field :url, class: "form-control"
+                .col-md-6
+                  = label_tag :url, "URL", class: "form-label"
+                  = text_field_tag :url, nil, name: "question[links_attributes][NEW_CHILD_ID][url]", class: "form-control"
+
+                input type="hidden" value="0" name="question[links_attributes][NEW_CHILD_ID][_destroy]"
+                = link_to "Remove link", "#", {action: "nested-form#remove"}
+
+            div data-nested-form-target="fields"
+              = f.fields_for :links do |link|
+                .row.nested-fields
+                  .col-md-6
+                    = link.label :name, class: "form-label"
+                    = link.text_field :name, class: "form-control"
+
+                  .col-md-6
+                    = link.label :url, class: "form-label"
+                    = link.text_field :url, class: "form-control"
+
+                  = link.hidden_field :_destroy
+                  = link_to "Remove link", "#", data: { action: "nested-form#remove" }
+
+            button.btn.btn-secondary data-action="nested-form#add" type="button" Add link
 
         .col-12
           div data-controller="upload"
