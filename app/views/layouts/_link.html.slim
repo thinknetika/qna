@@ -1,1 +1,7 @@
-= link_to resource.name, resource.url, target: "_blank", rel: "noopener noreferrer"
+- if resource.url.start_with?("https://gist.github.com/")
+  div data-controller="gist-loader" data-gist-loader-url-value=resource.url
+    span data-gist-loader-target="placeholder" Loading gist...
+    = link_to resource.name, resource.url, target: "_blank", rel: "noopener noreferrer"
+    div data-gist-loader-target="content"
+- else
+  = link_to resource.name, resource.url, target: "_blank", rel: "noopener noreferrer"
