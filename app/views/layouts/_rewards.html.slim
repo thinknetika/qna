@@ -1,0 +1,8 @@
+- collection.each do |user_reward|
+  div class="reward"
+    p Your rewards:
+    = user_reward.reward.title
+    - if user_reward.reward.image.attached?
+      = image_tag user_reward.reward.image, alt: user_reward.reward.title, style: "max-width: 100px;"
+    p Вопрос:
+    = user_reward.question.title

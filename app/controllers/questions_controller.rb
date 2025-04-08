@@ -7,6 +7,7 @@ class QuestionsController < ApplicationController
 
   def index
     @questions = Question.all
+    @user_rewards = UserReward.for_user(current_user) if current_user
   end
 
   def show; end
@@ -14,6 +15,7 @@ class QuestionsController < ApplicationController
   def new
     @question = Question.new
     @links = @question.links.new
+    @reward = @question.build_reward
   end
 
   def create
@@ -28,6 +30,7 @@ class QuestionsController < ApplicationController
 
   def edit
     @links = @question.links.presence || @question.links.new
+    @reward = @question.reward.presence || @question.build_reward
   end
 
   def update
@@ -55,8 +58,11 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [],
-                                     links_attributes: [ :name, :url, :id, :_destroy ])
+    params.require(:question).permit(
+      :title, :body, files: [],
+      links_attributes: [ :name, :url, :id, :_destroy ],
+      reward_attributes: [ :title, :image, :id, :_destroy ]
+    )
   end
 
   def authorize_question!
