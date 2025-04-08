@@ -51,6 +51,19 @@
                     multiple: true,
                     direct_upload: true,
                     data: { upload_target: "input",  action: "change->upload#uploadFile" }
+        .col-12
+          p Reward
+          = f.fields_for :reward do |r|
+            - if r.object.persisted? && r.object.image.attached?
+              = image_tag r.object.image.variant(resize_to_limit: [50, 50])
+
+              = r.check_box :_destroy
+              = r.label :_destroy, "Remove Reward"
+              = r.hidden_field :id
+
+            = r.label :title, class: "form-label"
+            = r.text_field :title, class: "form-control"
+            = r.file_field :image
 
         .col-12
           = f.submit 'Post question', class: "btn btn-primary"

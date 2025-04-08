@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'aws-sdk-s3', require: false
+gem "aws-sdk-s3", require: false
 gem "bootstrap"
 gem "bootsnap", require: false
 gem "devise"
@@ -11,6 +11,7 @@ gem "jbuilder"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 gem "rails", "~> 7.2.2", ">= 7.2.2.1"
+gem "ruby-vips"
 gem "sassc-rails"
 gem "slim-rails"
 gem "sprockets-rails"
