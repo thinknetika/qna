@@ -10,7 +10,7 @@ class BestAnswersController < ApplicationController
     @question.best_answer_id = @answer.id
     @question.save!
 
-    assign_reward_to_answer_author if @question.reward.present?
+    assign_reward if @question.reward.present?
   end
 
   private
@@ -23,15 +23,13 @@ class BestAnswersController < ApplicationController
     @question = @answer.question
   end
 
-  def assign_reward_to_answer_author
+  def assign_reward
+    return unless @question.reward.present?
+
     reward = @question.reward
 
-    user_reward = UserReward.find_or_create_by(reward: reward, question: @question) do |u_r|
-      u_r.user = @answer.author
-    end
+    user_reward = UserReward.find_or_create_by(reward: reward, question: @question)
 
-    unless user_reward.user.owns?(@answer)
-      user_reward.update!(user: @answer.author)
-    end
+    user_reward.update!(user: @answer.author)
   end
 end
