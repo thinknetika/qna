@@ -1,15 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe Answer, type: :model do
-  describe "validations" do
-    context "body" do
-      it { should validate_presence_of(:body) }
-    end
-  end
-
   describe "associations" do
-    context "answers" do
+    context "question" do
       it { should belong_to(:question) }
+    end
+
+    context 'author' do
+      it { should belong_to(:author) }
     end
 
     context 'links' do
@@ -19,6 +17,12 @@ RSpec.describe Answer, type: :model do
 
     context "files" do
       it { should have_many_attached(:files) }
+    end
+  end
+
+  describe "validations" do
+    context "body" do
+      it { should validate_presence_of(:body) }
     end
   end
 end
