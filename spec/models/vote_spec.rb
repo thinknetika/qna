@@ -34,6 +34,7 @@ RSpec.describe Vote, type: :model do
   describe 'votable - answer' do
     it 'should be associated with an answer' do
       vote = create(:vote, :for_answer)
+
       expect(vote.votable).to be_a(Answer)
     end
   end
