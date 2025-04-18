@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Question, type: :model do
   it_behaves_like 'Votable'
+  it_behaves_like 'Linkable'
 
   describe "associations" do
     context 'author' do
