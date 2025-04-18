@@ -1,6 +1,6 @@
-.row
-  .col-md-10.offset-md-1
-    = turbo_frame_tag answer do
+= turbo_frame_tag answer do
+  .row
+    .col-md-10.offset-md-1
       .card.mb-3
         .card-body
           .d-flex.justify-content-between.align-items-center
@@ -16,6 +16,10 @@
               div
                 - answer.links&.each do |link|
                   = render partial: 'layouts/link', locals: { resource: link }
+
+            div
+              - if current_user
+                = render partial: 'layouts/vote_buttons', locals: { votable: answer }
 
             div
               .d-flex.align-items-center

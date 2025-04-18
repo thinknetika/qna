@@ -1,4 +1,6 @@
 class AnswersController < ApplicationController
+  include VotableController
+
   before_action :set_question, only: %i[new create]
   before_action :set_answer, only: %i[edit update destroy]
   before_action :set_question_from_answer, only: %i[update destroy]
