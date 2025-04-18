@@ -17,6 +17,10 @@
             = render partial: 'layouts/link', locals: { resource: link }
 
         div
+          - if current_user
+            =render partial: 'layouts/vote_buttons', locals: { votable: question }
+
+        div
           - unless show_view(question)
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
 
