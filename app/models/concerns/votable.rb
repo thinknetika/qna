@@ -8,8 +8,4 @@ module Votable
   def rating
     votes.sum(:value)
   end
-
-  def vote_by(user)
-    votes.find_by(user: user)
-  end
 end
