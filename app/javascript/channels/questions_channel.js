@@ -4,13 +4,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const questionsList = document.getElementById("questions");
 
   consumer.subscriptions.create("QuestionsChannel", {
-    connected() {
-      console.log("question channel connected");
-    },
+    connected() {},
 
-    disconnected() {
-      // Called when the subscription has been terminated by the server
-    },
+    disconnected() {},
 
     received(data) {
       switch (data.action) {

@@ -1,0 +1,28 @@
+= turbo_frame_tag answer do
+  .row
+    .col-md-10.offset-md-1
+      .card.mb-3
+        .card-body
+          .d-flex.justify-content-between.align-items-center
+            div
+              p.card-text = answer.body
+
+            div.attached-files.mt-2
+              - if answer.files.attached?
+                .d-flex.flex-wrap
+                  - answer.files.each do |file|
+                    = render partial: 'layouts/files', locals: { file: file, source: answer }
+
+              div
+                - answer.links&.each do |link|
+                  = render partial: 'layouts/link', locals: { resource: link }
+
+            div
+              - if authenticated
+                = render partial: 'layouts/channels/votes_buttons', locals: { votable: answer }
+
+            div
+              .d-flex.align-items-center
+                - if answer == question.best_answer
+                  span.text-success Best answer
+
