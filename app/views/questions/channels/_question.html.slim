@@ -1,0 +1,25 @@
+= turbo_frame_tag question do
+  .card.mb-3
+    .card-body
+      .d-flex.justify-content-between.align-items-center
+        div
+          h4.card-title = question.title
+          p.card-text = question.body
+
+        div.attached-files.mt-2
+          - if question.files.attached?
+            .d-flex.flex-wrap
+              - question.files.each do |file|
+                = render partial: 'layouts/files', locals: { file: file, source: question }
+
+        div
+          - question.links&.each do |link|
+            = render partial: 'layouts/link', locals: { resource: link }
+
+        div
+          - if authenticated
+            =render partial: 'layouts/channels/votes_buttons', locals: { votable: question }
+
+        div
+          - unless show_view(question)
+            = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"

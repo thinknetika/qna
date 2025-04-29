@@ -23,6 +23,12 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
+      ActionCable.server.broadcast("questions_channel_authenticated",
+                                   { question_html: render_question(authenticated: true), action: "create" })
+
+      ActionCable.server.broadcast("questions_channel_guest",
+                                   { question_html: render_question(authenticated: false), action: "create" })
+
       turbo_stream
     else
       render :new, status: :unprocessable_content
@@ -36,6 +42,15 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
+
+      ActionCable.server.broadcast("questions_channel_authenticated",
+                                   { question_html: render_question(authenticated: true),
+                                     action: "update", question_id: @question.id })
+
+      ActionCable.server.broadcast("questions_channel_guest",
+                                   { question_html: render_question(authenticated: false),
+                                     action: "update", question_id: @question.id })
+
       turbo_stream
     else
       render :edit, status: :unprocessable_entity
@@ -44,6 +59,14 @@ class QuestionsController < ApplicationController
 
   def destroy
     @question.destroy
+
+    ActionCable.server.broadcast("questions_channel_authenticated",
+                                 { question_html: render_question(authenticated: true),
+                                   action: "destroy", question_id: @question.id })
+
+    ActionCable.server.broadcast("questions_channel_guest",
+                                 { question_html: render_question(authenticated: false),
+                                   action: "destroy", question_id: @question.id })
 
     if show_view(@question)
       redirect_to (questions_path), status: :see_other
@@ -61,8 +84,8 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(
       :title, :body, files: [],
-      links_attributes: [ :name, :url, :id, :_destroy ],
-      reward_attributes: [ :title, :image, :id, :_destroy ]
+      links_attributes: [:name, :url, :id, :_destroy],
+      reward_attributes: [:title, :image, :id, :_destroy]
     )
   end
 
@@ -70,5 +93,12 @@ class QuestionsController < ApplicationController
     unless current_user&.owns?(@question)
       redirect_to questions_path(@question), alert: "You are not authorized to perform this action.", status: :see_other
     end
+  end
+
+  def render_question(authenticated)
+    ApplicationController.renderer.render(
+      partial: "questions/channels/question",
+      locals: { question: @question, authenticated: authenticated }
+    )
   end
 end
