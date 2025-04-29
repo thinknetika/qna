@@ -6,9 +6,4 @@ module ApplicationCable
       self.user = env["warden"]&.user
     end
   end
-
-  private
-  def find_verified_user
-    env["warden"]&.user
-  end
 end
