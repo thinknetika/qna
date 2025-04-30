@@ -2,8 +2,9 @@ import consumer from "./consumer"
 
 document.addEventListener("DOMContentLoaded", () => {
     const questionFrame = document.querySelector('turbo-frame');
+    const answersId = document.getElementById('answers');
 
-    if (questionFrame) { // Проверяем, что turbo-frame существует
+    if (answersId) {
         const questionId = parseInt(questionFrame.id.replace('question_', ''), 10);
 
         consumer.subscriptions.create({channel: "AnswersChannel", question_id: questionId}, {
@@ -58,7 +59,5 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
-    } else {
-        console.warn("Turbo frame not found.");
     }
 });
