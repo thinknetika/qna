@@ -23,11 +23,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
-      ActionCable.server.broadcast("questions_channel_authenticated",
-                                   { question_html: render_question(authenticated: true), action: "create" })
-
-      ActionCable.server.broadcast("questions_channel_guest",
-                                   { question_html: render_question(authenticated: false), action: "create" })
+      QuestionBroadcaster.broadcast(@question, "create")
 
       turbo_stream
     else
@@ -42,14 +38,7 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-
-      ActionCable.server.broadcast("questions_channel_authenticated",
-                                   { question_html: render_question(authenticated: true),
-                                     action: "update", question_id: @question.id })
-
-      ActionCable.server.broadcast("questions_channel_guest",
-                                   { question_html: render_question(authenticated: false),
-                                     action: "update", question_id: @question.id })
+      QuestionBroadcaster.broadcast(@question, "update")
 
       turbo_stream
     else
@@ -60,13 +49,7 @@ class QuestionsController < ApplicationController
   def destroy
     @question.destroy
 
-    ActionCable.server.broadcast("questions_channel_authenticated",
-                                 { question_html: render_question(authenticated: true),
-                                   action: "destroy", question_id: @question.id })
-
-    ActionCable.server.broadcast("questions_channel_guest",
-                                 { question_html: render_question(authenticated: false),
-                                   action: "destroy", question_id: @question.id })
+    QuestionBroadcaster.broadcast(@question, "destroy")
 
     if show_view(@question)
       redirect_to (questions_path), status: :see_other

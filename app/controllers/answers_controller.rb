@@ -15,11 +15,7 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
 
     if @answer.save
-      ActionCable.server.broadcast("answers_question_#{@question.id}_channel_authenticated",
-                                   { question_html: render_answer(authenticated: true), action: "create" })
-
-      ActionCable.server.broadcast("answers_question_#{@question.id}_channel_unauthenticated",
-                                   { question_html: render_answer(authenticated: false), action: "create" })
+      AnswerBroadcaster.broadcast(@answer, "create")
 
       turbo_stream
     else
@@ -33,14 +29,7 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      ActionCable.server.broadcast("answers_question_#{@question.id}_channel_authenticated",
-                                   { answer_html: render_answer(authenticated: true),
-                                     action: "update", answer_id: @answer.id })
-
-      ActionCable.server.broadcast("answers_question_#{@question.id}_channel_unauthenticated",
-                                   { answer_html: render_answer(authenticated: false),
-                                     action: "update", answer_id: @answer.id })
-
+      AnswerBroadcaster.broadcast(@answer, "update")
       turbo_stream
     else
       render :edit, status: :unprocessable_entity
@@ -48,13 +37,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    ActionCable.server.broadcast("answers_question_#{@question.id}_channel_authenticated",
-                                 { answer_html: render_answer(authenticated: true),
-                                   action: "destroy", answer_id: @answer.id })
-
-    ActionCable.server.broadcast("answers_question_#{@question.id}_channel_unauthenticated",
-                                 { answer_html: render_answer(authenticated: false),
-                                   action: "destroy", answer_id: @answer.id })
+    AnswerBroadcaster.broadcast(@answer, "destroy")
 
     @answer.destroy
   end
