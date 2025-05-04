@@ -30,7 +30,7 @@
 
       - if show_view(question)
         div id="question_comments"
-          - @question.comments.each do |comment|
+          - @question&.comments&.each do |comment|
             = render partial: 'comments/comment', locals: { comment: comment }
 
         div id="question_new_comment"

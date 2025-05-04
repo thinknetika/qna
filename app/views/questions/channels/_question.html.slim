@@ -23,3 +23,11 @@
         div
           - unless show_view(question)
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
+
+      - if show_view(question)
+        div id="question_comments"
+          - @question&.comments&.each do |comment|
+            = render partial: 'comments/comment', locals: { comment: comment }
+
+        div id="question_new_comment"
+          = render partial: 'comments/shared/new_comment', locals: { commentable: @question }
