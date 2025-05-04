@@ -1,0 +1,3 @@
+= turbo_stream.update "#{@commentable.model_name.singular}_new_comment",
+        partial: 'comments/form',
+        locals: { comment: @comment, commentable: @commentable }
