@@ -43,7 +43,7 @@
                             data: { turbo_method: :post },
                             class: "btn btn-success btn-sm"
 
-          div id="answer_comments"
+          div id="answer_#{answer.id}_comments"
             - answer&.comments&.each do |comment|
               = render partial: 'comments/comment', locals: { comment: comment }
 

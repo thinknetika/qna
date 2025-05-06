@@ -10,6 +10,12 @@ class CommentsController < ApplicationController
     @comment.author = current_user
 
     if @comment.save
+      commentable_model_name = @comment.commentable.model_name.singular
+      service_class_name = "#{commentable_model_name.classify}CommentsBroadcaster"
+
+      service_class = service_class_name.constantize
+      service_class.broadcast(@comment, "create")
+
       turbo_stream
     else
       render :new, status: :unprocessable_entity
@@ -20,6 +26,8 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
+      QuestionCommentsBroadcaster.broadcast(@comment, "update")
+
       turbo_stream
     else
       render :edit, status: :unprocessable_entity
@@ -27,6 +35,8 @@ class CommentsController < ApplicationController
   end
 
   def destroy
+    QuestionCommentsBroadcaster.broadcast(@comment, "destroy")
+
     @comment.destroy
   end
 
