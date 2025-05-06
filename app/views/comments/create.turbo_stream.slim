@@ -1,2 +1,2 @@
 = turbo_stream.update "#{@commentable.model_name.singular}_new_comment",  partial: 'comments/shared/new_comment', locals: { commentable: @commentable }
-= turbo_stream.append "#{@commentable.model_name.singular}_comments",  partial: 'comments/comment', locals: { comment: @comment }
+= turbo_stream.append "#{commentable_model_name(@commentable)}_comments",  partial: 'comments/comment', locals: { comment: @comment }
