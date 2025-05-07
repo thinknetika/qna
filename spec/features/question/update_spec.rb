@@ -39,8 +39,8 @@ feature 'User can update answer', js: true do
       end
 
       scenario 'Author can edit a question with errors' do
-        fill_in 'Title', with: ''
-        fill_in 'Body', with: ''
+        fill_in 'question_title', with: ''
+        fill_in 'question_body', with: ''
 
         click_on 'Post question'
 
@@ -81,8 +81,8 @@ feature 'User can update answer', js: true do
 
       scenario 'Author can edit a question with errors' do
         within "#question_#{question.id}" do
-          fill_in 'Title', with: ''
-          fill_in 'Body', with: ''
+          fill_in 'question_title', with: ''
+          fill_in 'question_body', with: ''
 
           click_on 'Post question'
         end

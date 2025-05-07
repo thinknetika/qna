@@ -10,7 +10,7 @@
           - if question.files.attached?
             .d-flex.flex-wrap
               - question.files.each do |file|
-                = render partial: 'layouts/files', locals: { file: file, source: question }
+                = render partial: 'layouts/channels/files', locals: { file: file, source: question }
 
         div
           - question.links&.each do |link|
