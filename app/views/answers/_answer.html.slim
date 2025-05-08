@@ -47,5 +47,6 @@
             - answer&.comments&.each do |comment|
               = render partial: 'comments/comment', locals: { comment: comment }
 
-          div id="answer_new_comment"
-            = render partial: 'comments/shared/new_comment', locals: { commentable: answer }
+          - if current_user
+            div id="answer_new_comment"
+              = render partial: 'comments/shared/new_comment', locals: { commentable: answer }

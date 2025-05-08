@@ -3,7 +3,7 @@ import consumer from "./consumer"
 document.addEventListener("DOMContentLoaded", () => {
   const answersId = document.getElementById('answers');
 
-  if (questionCommentsId) {
+  if (answersId) {
     const subscribeToAnswerComments = (answerId) => {
       consumer.subscriptions.create({ channel: "AnswerCommentsChannel", answer_id: answerId }, {
         connected() {
@@ -63,8 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const answerFrames = document.querySelectorAll('turbo-frame[id^="answer_"]');
 
       const answerIds = Array.from(answerFrames).map(frame => frame.id);
-
-      console.log("Found answer IDs:", answerIds);
 
       answerIds.forEach(answerId => {
         subscribeToAnswerComments(answerId.replace('answer_', ''));
