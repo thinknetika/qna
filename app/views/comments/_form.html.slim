@@ -1,4 +1,5 @@
 = form_with(url: polymorphic_path([commentable, comment]), model: comment) do |form|
+  = render 'shared/errors', resource: comment
   div
     = form.label :body
     = form.text_area :body

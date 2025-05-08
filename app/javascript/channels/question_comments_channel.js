@@ -1,6 +1,7 @@
 import consumer from "./consumer"
 
 document.addEventListener("DOMContentLoaded", () => {
+  const questionFrame = document.querySelector('turbo-frame[id^="question_"]');
   const questionCommentsId = document.getElementById('question_comments');
 
   if (questionCommentsId) {
