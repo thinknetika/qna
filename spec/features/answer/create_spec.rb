@@ -70,4 +70,49 @@ feature 'User can create an answer to the question', js: true do
       expect(page).to have_current_path(new_user_session_path)
     end
   end
+
+  context "multiple sessions" do
+    scenario "question appears on another user's page" do
+      Capybara.using_session('user_1') do
+        sign_in(user)
+        expect(page).to have_content 'Signed in successfully.', wait: 5
+
+        visit question_path(question)
+      end
+
+      Capybara.using_session('user_2') do
+        sign_in(user)
+        expect(page).to have_content 'Signed in successfully.', wait: 5
+
+        visit question_path(question)
+      end
+
+      Capybara.using_session('guest') do
+        visit question_path(question)
+      end
+
+      Capybara.using_session('user_1') do
+        within "#new_answer" do
+          click_on 'Post answer'
+
+          fill_in 'Your Answer', with: 'Question answer'
+
+          click_on 'Post answer'
+        end
+
+        expect(page).to have_content 'Question answer'
+        expect(current_path).to eq question_path(question)
+      end
+
+      Capybara.using_session('user_2') do
+        expect(page).to have_content 'Question answer'
+        expect(current_path).to eq question_path(question)
+      end
+
+      Capybara.using_session('guest') do
+        expect(page).to have_content 'Question answer'
+        expect(current_path).to eq question_path(question)
+      end
+    end
+  end
 end
