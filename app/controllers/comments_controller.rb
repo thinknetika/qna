@@ -1,6 +1,8 @@
 class CommentsController < ApplicationController
   before_action :set_commentable, only: %i[new create]
   before_action :set_comment, only: %i[edit update destroy]
+  before_action -> { authorize_user!(@comment) }, only: %i[edit update destroy]
+
   def new
     @comment = @commentable.comments.new
   end

@@ -8,7 +8,7 @@ feature 'User can create an comment to the question & answer', js: true do
 
   given!(:user) { create(:user) }
   given!(:question) { create(:question, author_id: user.id) }
-  given!(:answer) { create(:answer, :with_answer_files, question_id: question.id, author_id: user.id) }
+  given!(:answer) { create(:answer, question_id: question.id, author_id: user.id) }
 
   describe 'Authenticated user' do
     context 'to question' do
