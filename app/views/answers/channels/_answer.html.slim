@@ -18,11 +18,10 @@
                   = render partial: 'layouts/link', locals: { resource: link }
 
             div
-              - if authenticated
-                = render partial: 'layouts/channels/votes_buttons', locals: { votable: answer }
+              / - if authenticated
+              = render partial: 'layouts/channels/votes_buttons', locals: { votable: answer }
 
             div
               .d-flex.align-items-center
-                - if answer == question.best_answer
+                - if answer == answer.question.best_answer
                   span.text-success Best answer
-

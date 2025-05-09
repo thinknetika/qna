@@ -17,17 +17,16 @@
             = render partial: 'layouts/link', locals: { resource: link }
 
         div
-          - if authenticated
-            =render partial: 'layouts/channels/votes_buttons', locals: { votable: question }
+          =render partial: 'layouts/channels/votes_buttons', locals: { votable: question }
 
-        div
-          - unless show_view(question)
+        - unless show_view(question)
+          div
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
 
       - if show_view(question)
         div id="question_comments"
-          - @question&.comments&.each do |comment|
+          - question&.comments&.each do |comment|
             = render partial: 'comments/comment', locals: { comment: comment }
 
         div id="question_new_comment"
-          = render partial: 'comments/shared/new_comment', locals: { commentable: @question }
+          = render partial: 'comments/shared/new_comment', locals: { commentable: question }

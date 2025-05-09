@@ -23,7 +23,11 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
-      QuestionBroadcaster.broadcast(@question, "create")
+      QuestionBroadcaster.broadcast(
+        "questions_channel",
+        "questions/channels/create",
+        locals: { question: @question }
+      )
 
       turbo_stream
     else
@@ -38,7 +42,11 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-      QuestionBroadcaster.broadcast(@question, "update")
+      QuestionBroadcaster.broadcast(
+        "questions_channel",
+        "questions/channels/create",
+        locals: { question: @question }
+      )
 
       turbo_stream
     else
@@ -49,7 +57,11 @@ class QuestionsController < ApplicationController
   def destroy
     @question.destroy
 
-    QuestionBroadcaster.broadcast(@question, "destroy")
+    QuestionBroadcaster.broadcast(
+      "questions_channel",
+      "questions/channels/destroy",
+      locals: { question: @question }
+    )
 
     if show_view(@question)
       redirect_to (questions_path), status: :see_other
