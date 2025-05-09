@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :comment do
-    association :user
+    author { association :user }
     body { Faker::Lorem.paragraph }
     commentable { nil }
 
