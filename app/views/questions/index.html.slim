@@ -4,6 +4,8 @@
 = turbo_frame_tag 'new_question'
     = render 'questions/shared/new_question'
 
+= turbo_stream_from("questions_channel")
+
 div id="questions"
   - @questions.each do |question|
     = render partial: 'questions/question', locals: { question: question }

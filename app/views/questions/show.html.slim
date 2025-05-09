@@ -1,5 +1,7 @@
 = render partial: 'questions/question', locals: { question: @question }
 
+= turbo_stream_from("answers_channel")
+
 div id="answers" data-controller="answer-order" data-answer-order-target="answersContainer"
   = render partial: 'answers/answer', collection: @question.answers
 

@@ -15,7 +15,11 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
 
     if @answer.save
-      AnswerBroadcaster.broadcast(@answer, "create")
+      AnswerBroadcaster.broadcast(
+        "answers_channel",
+        "answers/channels/create",
+        locals: { answer: @answer }
+      )
 
       turbo_stream
     else
@@ -29,7 +33,12 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      AnswerBroadcaster.broadcast(@answer, "update")
+      AnswerBroadcaster.broadcast(
+        "answers_channel",
+        "answers/channels/update",
+        locals: { answer: @answer }
+      )
+
       turbo_stream
     else
       render :edit, status: :unprocessable_entity
@@ -37,7 +46,11 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    AnswerBroadcaster.broadcast(@answer, "destroy")
+    AnswerBroadcaster.broadcast(
+      "answers_channel",
+      "answers/channels/destroy",
+      locals: { answer: @answer }
+    )
 
     @answer.destroy
   end
