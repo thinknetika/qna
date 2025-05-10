@@ -29,6 +29,9 @@
             = delete_link_with_conditional_turbo_frame(question, "btn btn-danger btn-sm ms-2")
 
       - if show_view(question)
+
+        = turbo_stream_from("question_comments_channel")
+
         div id="question_comments"
           - @question&.comments&.each do |comment|
             = render partial: 'comments/comment', locals: { comment: comment, commentable: @question }

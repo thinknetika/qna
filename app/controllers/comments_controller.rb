@@ -16,7 +16,11 @@ class CommentsController < ApplicationController
       service_class_name = "#{commentable_model_name.classify}CommentsBroadcaster"
 
       service_class = service_class_name.constantize
-      service_class.broadcast(@comment, "create")
+      service_class.broadcast(
+        "question_comments_channel",
+        "comments/channels/create",
+        locals: { comment: @comment, commentable: @commentable }
+      )
 
       turbo_stream
     else
@@ -28,7 +32,11 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      QuestionCommentsBroadcaster.broadcast(@comment, "update")
+      QuestionCommentsBroadcaster.broadcast(
+        "question_comments_channel",
+        "comments/channels/update",
+        locals: { comment: @comment, commentable: @commentable }
+      )
 
       turbo_stream
     else
@@ -37,7 +45,11 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    QuestionCommentsBroadcaster.broadcast(@comment, "destroy")
+    QuestionCommentsBroadcaster.broadcast(
+      "question_comments_channel",
+      "comments/channels/destroy",
+      locals: { comment: @comment }
+    )
 
     @comment.destroy
   end

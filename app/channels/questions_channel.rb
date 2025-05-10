@@ -1,11 +1,9 @@
 class QuestionsChannel < ApplicationCable::Channel
   def subscribed
-    if user
-      stream_from "questions_channel_authenticated"
-    else
-      stream_from "questions_channel_guest"
-    end
+    # Any cleanup needed when channel is subscribed
   end
 
-  def unsubscribed; end
+  def unsubscribed
+    # Any cleanup needed when channel is unsubscribed
+  end
 end
