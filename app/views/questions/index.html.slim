@@ -6,6 +6,6 @@
 
 = turbo_stream_from("questions_channel")
 
-div id="questions"
+div id="questions" data-controller="questions"
   - @questions.each do |question|
     = render partial: 'questions/question', locals: { question: question }
