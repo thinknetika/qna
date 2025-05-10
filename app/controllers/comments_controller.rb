@@ -12,11 +12,7 @@ class CommentsController < ApplicationController
     @comment.author = current_user
 
     if @comment.save
-      commentable_model_name = @comment.commentable.model_name.singular
-      service_class_name = "#{commentable_model_name.classify}CommentsBroadcaster"
-
-      service_class = service_class_name.constantize
-      service_class.broadcast(
+      Broadcaster.broadcast(
         "question_comments_channel",
         "comments/channels/create",
         locals: { comment: @comment, commentable: @commentable }
@@ -32,7 +28,7 @@ class CommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      QuestionCommentsBroadcaster.broadcast(
+      Broadcaster.broadcast(
         "question_comments_channel",
         "comments/channels/update",
         locals: { comment: @comment, commentable: @commentable }
@@ -45,7 +41,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    QuestionCommentsBroadcaster.broadcast(
+    Broadcaster.broadcast(
       "question_comments_channel",
       "comments/channels/destroy",
       locals: { comment: @comment }
@@ -70,5 +66,9 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:body)
+  end
+
+  def set_service_broadcast_class
+    @service_class = service_broadcast_class(@comment)
   end
 end

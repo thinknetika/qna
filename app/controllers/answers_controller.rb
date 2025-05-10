@@ -15,7 +15,7 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
 
     if @answer.save
-      AnswerBroadcaster.broadcast(
+      Broadcaster.broadcast(
         "answers_channel",
         "answers/channels/create",
         locals: { answer: @answer }
@@ -33,7 +33,7 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      AnswerBroadcaster.broadcast(
+      Broadcaster.broadcast(
         "answers_channel",
         "answers/channels/update",
         locals: { answer: @answer }
@@ -46,7 +46,7 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    AnswerBroadcaster.broadcast(
+    Broadcaster.broadcast(
       "answers_channel",
       "answers/channels/destroy",
       locals: { answer: @answer }

@@ -1,4 +1,4 @@
-class AnswerCommentsBroadcaster
+class Broadcaster
   def self.broadcast(channel, template, **params)
     Turbo::StreamsChannel.broadcast_render_to(
       channel,
