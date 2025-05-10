@@ -23,7 +23,7 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
-      QuestionBroadcaster.broadcast(
+      Broadcaster.broadcast(
         "questions_channel",
         "questions/channels/create",
         locals: { question: @question }
@@ -42,7 +42,7 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
-      QuestionBroadcaster.broadcast(
+      Broadcaster.broadcast(
         "questions_channel",
         "questions/channels/create",
         locals: { question: @question }
@@ -57,7 +57,7 @@ class QuestionsController < ApplicationController
   def destroy
     @question.destroy
 
-    QuestionBroadcaster.broadcast(
+    Broadcaster.broadcast(
       "questions_channel",
       "questions/channels/destroy",
       locals: { question: @question }
