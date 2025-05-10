@@ -1,4 +1,4 @@
-= turbo_frame_tag answer do
+= turbo_frame_tag answer , class: "answer", data: { answers_target: "answer" } do
   .row
     .col-md-10.offset-md-1
       .card.mb-3
@@ -17,11 +17,13 @@
                 - answer.links&.each do |link|
                   = render partial: 'layouts/link', locals: { resource: link }
 
-            div
-              / - if authenticated
+            div class="authorize-user-actions"
               = render partial: 'layouts/channels/votes_buttons', locals: { votable: answer }
 
             div
               .d-flex.align-items-center
                 - if answer == answer.question.best_answer
                   span.text-success Best answer
+
+          div id="answer_new_comment" class="authorize-user-actions"
+            = render partial: 'comments/shared/new_comment', locals: { commentable: answer }

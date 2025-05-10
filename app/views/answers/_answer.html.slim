@@ -1,54 +1,55 @@
 = turbo_stream_from("answer_#{answer.id}_comments_channel")
 
 = turbo_frame_tag answer do
-  .row
-    .col-md-10.offset-md-1
-      .card.mb-3
-        .card-body
-          .d-flex.justify-content-between.align-items-center
-            div
-              p.card-text = answer.body
+  .answer data-answers-target="answer"
+    .row
+      .col-md-10.offset-md-1
+        .card.mb-3
+          .card-body
+            .d-flex.justify-content-between.align-items-center
+              div
+                p.card-text = answer.body
 
-            div.attached-files.mt-2
-              - if answer.files.attached?
-                .d-flex.flex-wrap
-                  - answer.files.each do |file|
-                    = render partial: 'layouts/files', locals: { file: file, source: answer }
+              div.attached-files.mt-2
+                - if answer.files.attached?
+                  .d-flex.flex-wrap
+                    - answer.files.each do |file|
+                      = render partial: 'layouts/files', locals: { file: file, source: answer }
+
+                div
+                  - answer.links&.each do |link|
+                    = render partial: 'layouts/link', locals: { resource: link }
 
               div
-                - answer.links&.each do |link|
-                  = render partial: 'layouts/link', locals: { resource: link }
+                - if current_user
+                  = render partial: 'layouts/vote_buttons', locals: { votable: answer }
 
-            div
-              - if current_user
-                = render partial: 'layouts/vote_buttons', locals: { votable: answer }
+              div
+                .d-flex.align-items-center
+                  - if current_user&.owns?(answer)
+                    = link_to 'Edit',
+                            edit_answer_path(answer),
+                            data: { turbo_stream: true },
+                            class: "btn btn-warning btn-sm me-2"
+                    = link_to 'Delete', answer_path(answer),
+                            method: :delete,
+                            data: { turbo_method: :delete, turbo_confirm: 'Are you sure' },
+                            class: "btn btn-danger btn-sm me-2"
 
-            div
-              .d-flex.align-items-center
-                - if current_user&.owns?(answer)
-                  = link_to 'Edit',
-                          edit_answer_path(answer),
-                          data: { turbo_stream: true },
-                          class: "btn btn-warning btn-sm me-2"
-                  = link_to 'Delete', answer_path(answer),
-                          method: :delete,
-                          data: { turbo_method: :delete, turbo_confirm: 'Are you sure' },
-                          class: "btn btn-danger btn-sm me-2"
+                  - if answer == @question.best_answer
+                    span.text-success Best answer
+                  - else
+                    - if current_user&.owns?(@question)
+                      = button_to "Mark as best",
+                              best_answers_path(answer_id: answer.id),
+                              method: :post,
+                              data: { turbo_method: :post },
+                              class: "btn btn-success btn-sm"
 
-                - if answer == @question.best_answer
-                  span.text-success Best answer
-                - else
-                  - if current_user&.owns?(@question)
-                    = button_to "Mark as best",
-                            best_answers_path(answer_id: answer.id),
-                            method: :post,
-                            data: { turbo_method: :post },
-                            class: "btn btn-success btn-sm"
+            div id="answer_#{answer.id}_comments"
+              - answer&.comments&.each do |comment|
+                = render partial: 'comments/comment', locals: { comment: comment }
 
-          div id="answer_#{answer.id}_comments"
-            - answer&.comments&.each do |comment|
-              = render partial: 'comments/comment', locals: { comment: comment }
-
-          - if current_user
-            div id="answer_new_comment"
-              = render partial: 'comments/shared/new_comment', locals: { commentable: answer }
+            - if current_user
+              div id="answer_new_comment"
+                = render partial: 'comments/shared/new_comment', locals: { commentable: answer }
