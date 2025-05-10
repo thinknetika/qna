@@ -1,4 +1,4 @@
-= turbo_frame_tag question do
+= turbo_frame_tag question, class: "question", data: { questions_target: "question" } do
   .card.mb-3
     .card-body
       .d-flex.justify-content-between.align-items-center
@@ -16,7 +16,7 @@
           - question.links&.each do |link|
             = render partial: 'layouts/link', locals: { resource: link }
 
-        div
+        div class="authorize-user-actions"
           =render partial: 'layouts/channels/votes_buttons', locals: { votable: question }
 
         - unless show_view(question)
@@ -28,5 +28,5 @@
           - question&.comments&.each do |comment|
             = render partial: 'comments/comment', locals: { comment: comment }
 
-        div id="question_new_comment"
+        div id="question_new_comment" class="authorize-user-actions"
           = render partial: 'comments/shared/new_comment', locals: { commentable: question }
