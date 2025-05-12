@@ -36,7 +36,7 @@ class CommentsController < ApplicationController
 
       turbo_stream
     else
-      render :edit, status: :unprocessable_entity
+      render :edit
     end
   end
 
