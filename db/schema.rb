@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_04_30_182359) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_12_143011) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,6 +47,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_30_182359) do
     t.integer "author_id", null: false
     t.index ["author_id"], name: "index_answers_on_author_id"
     t.index ["question_id"], name: "index_answers_on_question_id"
+  end
+
+  create_table "authorizations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "provider"
+    t.string "uid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_authorizations_on_provider_and_uid"
+    t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -129,6 +139,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_04_30_182359) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "answers", "questions"
   add_foreign_key "answers", "users", column: "author_id"
+  add_foreign_key "authorizations", "users"
   add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "questions", "answers", column: "best_answer_id"
   add_foreign_key "questions", "users", column: "author_id"

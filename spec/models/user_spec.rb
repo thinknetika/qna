@@ -18,6 +18,10 @@ RSpec.describe User, type: :model do
     context 'votes' do
       it { should have_many(:votes).dependent(:destroy) }
     end
+
+    context 'authorizations' do
+      it { should have_many(:authorizations) }
+    end
   end
 
   describe 'validations' do
@@ -43,6 +47,18 @@ RSpec.describe User, type: :model do
     it 'returns false if the user does not own the resource' do
       resource.update(author: other_user)
       expect(user.owns?(resource)).to be_falsy
+    end
+  end
+
+  describe '.find_for_ouath' do
+    let!(:user) { create(:user) }
+    let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456') }
+    let(:service) { double('Services::FindForOauth') }
+
+    it 'calls Services::FindForOauth' do
+      expect(FindForOauth).to receive(:new).with(auth).and_return(service)
+      expect(service).to receive(:call)
+      User.find_for_oauth(auth)
     end
   end
 end
