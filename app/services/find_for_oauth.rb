@@ -10,15 +10,44 @@ class FindForOauth
     return authorization.user if authorization
 
     email = auth.info[:email]
+
+    if email.blank?
+      email = temporary_email(auth.uid)
+      generated_email = true
+    end
+
     user = User.where(email: email).first
+
     if user
       user.create_authorization(auth)
     else
+      Rails.logger.debug "User not found, creating new user."
       password = Devise.friendly_token[0, 20]
-      user = User.create!(email: email, password: password, password_confirmation: password)
-      user.create_authorization(auth)
-    end
 
-    user
+      user = User.new(
+        email: email,
+        password: password,
+        password_confirmation: password)
+
+      if generated_email
+        user.skip_confirmation!
+      else
+        user.confirmed_at = Time.now
+      end
+
+      if user.save
+        user.create_authorization(auth)
+
+        [user, password]
+      else
+        Rails.logger.error "Failed to create authorization after user creation."
+
+        nil
+      end
+    end
+  end
+
+  def temporary_email(uid)
+    "#{uid}@example.com"
   end
 end

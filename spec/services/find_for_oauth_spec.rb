@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Services::FindForOauth do
+RSpec.describe FindForOauth do
   let!(:user) { create(:user) }
   let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456') }
-  subject { Services::FindForOauth.new(auth) }
+  subject { FindForOauth.new(auth) }
 
   context 'user already has authorization' do
     it 'returns the user' do
@@ -24,14 +24,14 @@ RSpec.describe Services::FindForOauth do
       end
 
       it 'creates authorization with provider and uid' do
-        authorization = subject.call.authorizations.first
+        authorization = subject.call
 
         expect(authorization.provider).to eq auth.provider
         expect(authorization.uid).to eq auth.uid
       end
 
       it 'returns the user' do
-        expect(subject.call).to eq user
+        expect(subject.call.user).to eq user
       end
     end
 
@@ -43,21 +43,25 @@ RSpec.describe Services::FindForOauth do
       end
 
       it 'returns new user' do
-        expect(subject.call).to be_a(User)
+        expect(subject.call[0]).to be_a(User)
       end
 
       it 'fills user email' do
-        user = subject.call
+        user = subject.call[0]
+
+        puts user.inspect
+        puts user.email
+        auth.email
         expect(user.email).to eq auth.email
       end
 
       it 'creates authorization for user' do
-        user = subject.call
+        user = subject.call[0]
         expect(user.authorizations).to_not be_empty
       end
 
       it 'creates authorization with provider and uid' do
-        authorization = subject.call.authorizations.first
+        authorization = subject.call[0].authorizations.first
 
         expect(authorization.provider).to eq auth.provider
         expect(authorization.uid).to eq auth.uid
