@@ -39,7 +39,7 @@ RSpec.describe Users::OmniauthCallbacksController, type: :controller do
       end
 
       it 'redirects to root path' do
-        expect(response).to redirect_to root_path
+        expect(response).to redirect_to new_user_session_path
       end
 
       it 'does not login user' do
