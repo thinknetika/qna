@@ -31,7 +31,7 @@ class QuestionsController < ApplicationController
 
       turbo_stream
     else
-      render :new, status: :unprocessable_content
+      render :new
     end
   end
 
