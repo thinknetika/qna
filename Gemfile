@@ -43,6 +43,7 @@ end
 
 group :test do
   gem "capybara"
+  gem 'capybara-email'
   gem "selenium-webdriver"
   gem "shoulda-matchers", "~> 6.0"
   gem "launchy"
