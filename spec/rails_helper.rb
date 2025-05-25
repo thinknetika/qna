@@ -5,6 +5,7 @@ require_relative '../config/environment'
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'support/capybara'
 require 'rspec/rails'
+require 'capybara/email/rspec'
 
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
@@ -24,6 +25,7 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.render_views = true
+  config.include Capybara::Email::DSL
 
   config.after(:all) do
     FileUtils.rm_rf("#{Rails.root}/tmp/storage")
