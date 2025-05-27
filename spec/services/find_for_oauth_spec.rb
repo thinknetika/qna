@@ -15,6 +15,7 @@ RSpec.describe FindForOauth do
   context 'user has not authorization' do
     context 'user has already exist' do
       let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: user.email }) }
+
       it 'does not create new user' do
         expect { subject.call }.to_not change(User, :count)
       end
@@ -24,14 +25,13 @@ RSpec.describe FindForOauth do
       end
 
       it 'creates authorization with provider and uid' do
-        authorization = subject.call
+        authorization = subject.call[0].authorizations.first
 
-        expect(authorization.provider).to eq auth.provider
-        expect(authorization.uid).to eq auth.uid
+        expect(authorization).to have_attributes(provider: auth.provider, uid: auth.uid)
       end
 
       it 'returns the user' do
-        expect(subject.call.user).to eq user
+        expect(subject.call[0]).to eq user
       end
     end
 
@@ -39,7 +39,7 @@ RSpec.describe FindForOauth do
       let(:auth) { OmniAuth::AuthHash.new(provider: 'facebook', uid: '123456', info: { email: 'new@user.com' }) }
 
       it 'creates new user' do
-        expect { subject.call }
+        expect { User.find_for_oauth(auth) }
       end
 
       it 'returns new user' do
@@ -49,10 +49,7 @@ RSpec.describe FindForOauth do
       it 'fills user email' do
         user = subject.call[0]
 
-        puts user.inspect
-        puts user.email
-        auth.email
-        expect(user.email).to eq auth.email
+        expect(user.email).to eq auth[:info].email
       end
 
       it 'creates authorization for user' do
@@ -63,8 +60,7 @@ RSpec.describe FindForOauth do
       it 'creates authorization with provider and uid' do
         authorization = subject.call[0].authorizations.first
 
-        expect(authorization.provider).to eq auth.provider
-        expect(authorization.uid).to eq auth.uid
+        expect(authorization).to have_attributes(provider: auth.provider, uid: auth.uid)
       end
     end
   end

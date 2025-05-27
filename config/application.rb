@@ -31,7 +31,5 @@ module Qna
                        routing_specs: false,
                        request_specs: false
     end
-
-    config.autoload_paths += [config.root.join('app')]
   end
 end

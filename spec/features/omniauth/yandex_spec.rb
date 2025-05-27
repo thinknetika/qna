@@ -4,38 +4,16 @@ require 'capybara/email/rspec'
 feature "YandexOAuth", js: true do
   background do
     OmniAuth.config.test_mode = true
-
-    def mock_yandex_auth(email: 'user@example.com')
-      OmniAuth.config.mock_auth[:yandex] = OmniAuth::AuthHash.new({
-                                                                    provider: 'yandex',
-                                                                    uid: '98765432',
-                                                                    info: {
-                                                                      name: 'Yandex User',
-                                                                      email: email
-                                                                    },
-                                                                    credentials: {
-                                                                      token: 'mock_yandex_token',
-                                                                      refresh_token: 'mock_yandex_refresh_token',
-                                                                      expires_at: Time.now + 1.week
-                                                                    }
-                                                                  })
-    end
-
-    @password = 'generated_password' # Мокаем сгенерированный пароль
-    mock_yandex_auth  # Создаем mock_auth для "успешного" сценария
   end
 
-  # after do
-  #   User.delete_all
-  #   session[:temporary_password] = nil # Очищаем сессию
-  # end
-
   scenario 'Signs in via Yandex and redirects to edit profile if email is @example.com and confirms email' do
+    mock_omniauth_provider(:yandex)
+
     visit new_user_session_path
     click_button 'Sign in with Yandex'
 
     # redirected to the edit profile page
-    expect(page).to have_current_path(edit_user_registration_path) # Redirect to edit profile
+    expect(page).to have_current_path(edit_user_registration_path)
     expect(page).to have_content('Edit User')
 
     # fill_in form with new user data
@@ -75,8 +53,8 @@ feature "YandexOAuth", js: true do
   end
 
   scenario 'Sign in via Yandex fails if user cannot be found' do
+    mock_omniauth_provider(:yandex)
     allow(User).to receive(:find_for_oauth).and_return([nil, nil])
-    mock_yandex_auth(email: 'nonexistent@example.com')
 
     visit new_user_session_path
     click_button 'Sign in with Yandex'

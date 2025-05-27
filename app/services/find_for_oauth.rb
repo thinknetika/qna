@@ -21,13 +21,12 @@ class FindForOauth
     if user
       user.create_authorization(auth)
     else
-      Rails.logger.debug "User not found, creating new user."
-      password = Devise.friendly_token[0, 20]
+      temporary_password = Devise.friendly_token[0, 20]
 
       user = User.new(
         email: email,
-        password: password,
-        password_confirmation: password)
+        password: temporary_password,
+        password_confirmation: temporary_password)
 
       if generated_email
         user.skip_confirmation!
@@ -37,14 +36,12 @@ class FindForOauth
 
       if user.save
         user.create_authorization(auth)
-
-        [user, password]
       else
         Rails.logger.error "Failed to create authorization after user creation."
-
-        nil
       end
     end
+
+    return user, temporary_password
   end
 
   def temporary_email(uid)

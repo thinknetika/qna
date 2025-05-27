@@ -1,4 +1,4 @@
-div data-controller="vote" data-vote-voted-value=votable.vote_by(current_user).present? data-vote-vote-value-value=(votable.vote_by(current_user).present? ? votable.vote_by(current_user).value : 0)
+div data-controller="vote"
   .d-flex.flex-column.align-items-center
     = button_to vote_path_for(votable, 1),
             method: :post,
