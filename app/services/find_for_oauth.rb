@@ -7,7 +7,7 @@ class FindForOauth
 
   def call
     authorization = Authorization.where(provider: auth.provider, uid: auth.uid.to_s).first
-    return authorization.user if authorization
+    return [authorization.user, nil] if authorization
 
     email = auth.info[:email]
 
@@ -41,7 +41,7 @@ class FindForOauth
       end
     end
 
-    return user, temporary_password
+    [user, temporary_password]
   end
 
   def temporary_email(uid)
