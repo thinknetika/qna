@@ -18,7 +18,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       if user.email.include?('@example.com')
         session[:temporary_password] = password
-        user.email = ""
 
         redirect_to edit_user_registration_path, status: :see_other
       else
