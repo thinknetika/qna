@@ -1,14 +1,18 @@
 class CommentsController < ApplicationController
   before_action :set_commentable, only: %i[new create]
   before_action :set_comment, only: %i[edit update destroy]
-  before_action -> { authorize_user!(@comment) }, only: %i[edit update destroy]
 
   def new
     @comment = @commentable.comments.new
+
+    authorize @comment
   end
 
   def create
     @comment = @commentable.comments.build(comment_params)
+
+    authorize @comment
+
     @comment.author = current_user
 
     if @comment.save
@@ -24,9 +28,13 @@ class CommentsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+    authorize @comment
+  end
 
   def update
+    authorize @comment
+
     if @comment.update(comment_params)
       Broadcaster.broadcast(
         "question_comments_channel",
@@ -41,6 +49,8 @@ class CommentsController < ApplicationController
   end
 
   def destroy
+    authorize @comment
+
     Broadcaster.broadcast(
       "question_comments_channel",
       "comments/channels/destroy",
