@@ -11,19 +11,19 @@ RSpec.describe ActiveStorage::AttachmentPolicy, type: :policy do
 
   permissions :destroy? do
     it "grants access if user is admin" do
-      expect(subject).to permit(admin, attachment) # Авторизуем attachment
+      expect(subject).to permit(admin, attachment)
     end
 
     it "grants access if the user is the author of the question" do
-      expect(subject).to permit(author, attachment) # Авторизуем attachment
+      expect(subject).to permit(author, attachment)
     end
 
     it "denies access if the user is not the author of the question" do
-      expect(subject).not_to permit(user, attachment) # Авторизуем attachment
+      expect(subject).not_to permit(user, attachment)
     end
 
     it "denies access if the user is quest" do
-      expect(subject).not_to permit(nil, attachment) # Авторизуем attachment
+      expect(subject).not_to permit(nil, attachment)
     end
   end
 end

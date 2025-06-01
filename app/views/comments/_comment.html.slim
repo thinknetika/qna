@@ -1,11 +1,12 @@
 = turbo_frame_tag comment do
   p = comment.body
 
-  - if current_user&.owns?(comment)
+  - if policy(comment).edit?
     = link_to 'Edit',
           edit_comment_path(comment),
           data: { turbo_stream: true },
           class: "btn btn-warning btn-sm me-2"
+  - if policy(comment).destroy?
     = link_to 'Delete', comment_path(comment),
           method: :delete,
           data: { turbo_method: :delete, turbo_confirm: 'Are you sure' },
