@@ -24,8 +24,9 @@
           - unless show_view(question)
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
 
-          - if current_user&.owns?(question)
+          - if policy(question).edit?
             = link_to 'Edit', edit_question_path(question), data: {turbo_stream: true}, class: "btn btn-warning btn-sm ms-2"
+          - if policy(question).destroy?
             = delete_link_with_conditional_turbo_frame(question, "btn btn-danger btn-sm ms-2")
 
       - if show_view(question)
