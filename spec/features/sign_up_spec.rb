@@ -11,13 +11,13 @@ feature 'The user can register in the system', %q(
     fill_in 'Email', with: 'user@test.ru'
     fill_in 'Password', with: 'password'
     fill_in 'Password confirmation', with: 'password'
-    click_on 'Sign up'
+    click_button 'Sign up'
 
     expect(page).to have_content 'Welcome! You have signed up successfully.'
   end
 
   scenario 'User is trying to register with invalid data' do
-    click_on 'Sign up'
+    click_button 'Sign up'
 
     expect(page).to have_content "Email can't be blank"
     expect(page).to have_content "Password can't be blank"
