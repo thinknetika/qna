@@ -26,11 +26,13 @@
 
               div
                 .d-flex.align-items-center
-                  - if current_user&.owns?(answer)
+                  - if policy(answer).edit?
                     = link_to 'Edit',
                             edit_answer_path(answer),
                             data: { turbo_stream: true },
                             class: "btn btn-warning btn-sm me-2"
+
+                  - if policy(answer).edit?
                     = link_to 'Delete', answer_path(answer),
                             method: :delete,
                             data: { turbo_method: :delete, turbo_confirm: 'Are you sure' },

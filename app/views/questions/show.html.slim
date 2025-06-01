@@ -5,5 +5,5 @@
 div id="answers" data-controller="answer-order answers" data-answer-order-target="answersContainer"
   = render partial: 'answers/answer', collection: @question.answers
 
-- if user_signed_in?
+- if current_user
   = render partial: 'answers/shared/new_answer'
