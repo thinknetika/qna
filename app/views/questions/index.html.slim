@@ -2,8 +2,10 @@
   = render partial: 'layouts/rewards', locals: { collection: @user_rewards }
 
 = turbo_frame_tag 'new_question'
-  = render 'questions/shared/new_question'
+    = render 'questions/shared/new_question'
 
-div id="questions"
+= turbo_stream_from("questions_channel")
+
+div id="questions" data-controller="questions"
   - @questions.each do |question|
     = render partial: 'questions/question', locals: { question: question }

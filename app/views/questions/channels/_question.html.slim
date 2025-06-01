@@ -1,0 +1,32 @@
+= turbo_frame_tag question, class: "question", data: { questions_target: "question" } do
+  .card.mb-3
+    .card-body
+      .d-flex.justify-content-between.align-items-center
+        div
+          h4.card-title = question.title
+          p.card-text = question.body
+
+        div.attached-files.mt-2
+          - if question.files.attached?
+            .d-flex.flex-wrap
+              - question.files.each do |file|
+                = render partial: 'layouts/channels/files', locals: { file: file, source: question }
+
+        div
+          - question.links&.each do |link|
+            = render partial: 'layouts/link', locals: { resource: link }
+
+        div class="authorize-user-actions"
+          =render partial: 'layouts/channels/votes_buttons', locals: { votable: question }
+
+        - unless show_view(question)
+          div
+            = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
+
+      - if show_view(question)
+        div id="question_comments"
+          - question&.comments&.each do |comment|
+            = render partial: 'comments/comment', locals: { comment: comment }
+
+        div id="question_new_comment" class="authorize-user-actions"
+          = render partial: 'comments/shared/new_comment', locals: { commentable: question }

@@ -15,6 +15,12 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
 
     if @answer.save
+      Broadcaster.broadcast(
+        "answers_channel",
+        "answers/channels/create",
+        locals: { answer: @answer }
+      )
+
       turbo_stream
     else
       render :new, status: :unprocessable_entity
@@ -27,6 +33,12 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
+      Broadcaster.broadcast(
+        "answers_channel",
+        "answers/channels/update",
+        locals: { answer: @answer }
+      )
+
       turbo_stream
     else
       render :edit, status: :unprocessable_entity
@@ -34,6 +46,12 @@ class AnswersController < ApplicationController
   end
 
   def destroy
+    Broadcaster.broadcast(
+      "answers_channel",
+      "answers/channels/destroy",
+      locals: { answer: @answer }
+    )
+
     @answer.destroy
   end
 
@@ -54,5 +72,12 @@ class AnswersController < ApplicationController
   def answer_params
     params.require(:answer).permit(:body, files: [],
                                    links_attributes: [ :name, :url, :id, :_destroy ])
+  end
+
+  def render_answer(authenticated)
+    ApplicationController.renderer.render(
+      partial: "answers/channels/answer",
+      locals: { answer: @answer, question: @question, authenticated: authenticated }
+    )
   end
 end

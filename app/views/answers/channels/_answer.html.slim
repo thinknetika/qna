@@ -1,0 +1,29 @@
+= turbo_frame_tag answer , class: "answer", data: { answers_target: "answer" } do
+  .row
+    .col-md-10.offset-md-1
+      .card.mb-3
+        .card-body
+          .d-flex.justify-content-between.align-items-center
+            div
+              p.card-text = answer.body
+
+            div.attached-files.mt-2
+              - if answer.files.attached?
+                .d-flex.flex-wrap
+                  - answer.files.each do |file|
+                    = render partial: 'layouts/channels/files', locals: { file: file, source: answer }
+
+              div
+                - answer.links&.each do |link|
+                  = render partial: 'layouts/link', locals: { resource: link }
+
+            div class="authorize-user-actions"
+              = render partial: 'layouts/channels/votes_buttons', locals: { votable: answer }
+
+            div
+              .d-flex.align-items-center
+                - if answer == answer.question.best_answer
+                  span.text-success Best answer
+
+          div id="answer_new_comment" class="authorize-user-actions"
+            = render partial: 'comments/shared/new_comment', locals: { commentable: answer }

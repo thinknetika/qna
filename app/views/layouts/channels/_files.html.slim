@@ -1,0 +1,7 @@
+= turbo_frame_tag file do
+  - file_extension = File.extname(file.filename.to_s).delete('.')
+  .position-relative
+    = link_to url_for(file), class: "d-block text-center me-2 mb-2 border rounded p-2", target: "_blank", style: "width: 80px; height: 80px; text-decoration: none; color: #495057;" do
+      i.fas.fa-file-alt.fa-3x.d-block.mt-2
+      .small.text-muted.d-block.text-truncate = file.filename.to_s
+      .small.text-muted.d-block = file_extension.upcase

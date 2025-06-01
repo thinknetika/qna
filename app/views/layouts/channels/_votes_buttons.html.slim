@@ -1,0 +1,18 @@
+div data-controller="vote"
+  .d-flex.flex-column.align-items-center
+    = button_to vote_path_for(votable, 1),
+            method: :post,
+            class: "btn btn-link p-0 text-success",
+            data: { action: "click->vote#vote" }, id: "upvote-button" do
+      i.fas.fa-sort-up
+
+    span data-vote-target="rating" class="my-2"
+      = votable.rating
+
+    = button_to vote_path_for(votable, -1),
+            method: :post,
+            class: "btn btn-link p-0 text-danger",
+            data: { action: "click->vote#vote" }, id: "downvote-button" do
+      i.fas.fa-sort-down
+
+  div data-vote-target="error" style="color: red;"

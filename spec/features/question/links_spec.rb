@@ -21,15 +21,15 @@ feature 'User can add links to question', js: true do
 
     click_on 'Ask question'
 
-    fill_in 'Title', with: 'Test question'
-    fill_in 'Body', with: 'text text text'
+    fill_in 'question_title', with: 'Test question'
+    fill_in 'question_body', with: 'text text text'
 
     fill_in 'Name', with: 'Github'
     fill_in 'Url', with: url
 
     click_on 'Post question'
 
-    expect(page).to have_link 'Google', href: url
+    expect(page).to have_link 'Github', href: url
   end
 
   describe 'when editing an question' do

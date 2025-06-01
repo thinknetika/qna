@@ -23,6 +23,12 @@ class QuestionsController < ApplicationController
     @question = current_user.questions.new(question_params)
 
     if @question.save
+      Broadcaster.broadcast(
+        "questions_channel",
+        "questions/channels/create",
+        locals: { question: @question }
+      )
+
       turbo_stream
     else
       render :new
@@ -36,6 +42,12 @@ class QuestionsController < ApplicationController
 
   def update
     if @question.update(question_params)
+      Broadcaster.broadcast(
+        "questions_channel",
+        "questions/channels/create",
+        locals: { question: @question }
+      )
+
       turbo_stream
     else
       render :edit, status: :unprocessable_entity
@@ -44,6 +56,12 @@ class QuestionsController < ApplicationController
 
   def destroy
     @question.destroy
+
+    Broadcaster.broadcast(
+      "questions_channel",
+      "questions/channels/destroy",
+      locals: { question: @question }
+    )
 
     if show_view(@question)
       redirect_to (questions_path), status: :see_other
@@ -61,8 +79,8 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(
       :title, :body, files: [],
-      links_attributes: [ :name, :url, :id, :_destroy ],
-      reward_attributes: [ :title, :image, :id, :_destroy ]
+      links_attributes: [:name, :url, :id, :_destroy],
+      reward_attributes: [:title, :image, :id, :_destroy]
     )
   end
 
@@ -70,5 +88,12 @@ class QuestionsController < ApplicationController
     unless current_user&.owns?(@question)
       redirect_to questions_path(@question), alert: "You are not authorized to perform this action.", status: :see_other
     end
+  end
+
+  def render_question(authenticated)
+    ApplicationController.renderer.render(
+      partial: "questions/channels/question",
+      locals: { question: @question, authenticated: authenticated }
+    )
   end
 end
