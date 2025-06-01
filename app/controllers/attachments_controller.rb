@@ -1,9 +1,10 @@
 class AttachmentsController < ApplicationController
   before_action :set_file,  only: %i[destroy]
   before_action :set_record, only: %i[destroy]
-  before_action -> { authorize_user!(@record) }, only: %i[destroy]
 
   def destroy
+    authorize @record
+
     if @file
       @file.purge
 

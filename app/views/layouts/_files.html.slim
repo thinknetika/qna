@@ -5,6 +5,6 @@
       i.fas.fa-file-alt.fa-3x.d-block.mt-2
       .small.text-muted.d-block.text-truncate = file.filename.to_s
       .small.text-muted.d-block = file_extension.upcase
-    - if current_user&.owns?(source)
+    - if policy(file).destroy?
       = link_to attachment_path(file), method: :delete, data: { turbo_method: :delete, confirm: "Вы уверены?" }, class: "position-absolute top-0 end-0 text-danger", style: "font-size: 0.8em;" do
         i.fas.fa-times-circle
