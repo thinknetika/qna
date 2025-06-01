@@ -4,15 +4,18 @@ class AnswersController < ApplicationController
   before_action :set_question, only: %i[new create]
   before_action :set_answer, only: %i[edit update destroy]
   before_action :set_question_from_answer, only: %i[update destroy]
-  before_action -> { authorize_user!(@answer) }, only: %i[edit update destroy]
 
   def new
     @answer = @question.answers.new
     @links = @answer.links.new
+
+    authorize @answer
   end
 
   def create
     @answer = @question.answers.build(answer_params).tap { |answer| answer.author = current_user }
+
+    authorize @answer
 
     if @answer.save
       Broadcaster.broadcast(
@@ -28,10 +31,14 @@ class AnswersController < ApplicationController
   end
 
   def edit
+    authorize @answer
+
     @links = @answer.links.presence || @answer.links.new
   end
 
   def update
+    authorize @answer
+
     if @answer.update(answer_params)
       Broadcaster.broadcast(
         "answers_channel",

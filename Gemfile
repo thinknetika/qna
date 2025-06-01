@@ -16,6 +16,7 @@ gem "omniauth-oauth2"
 gem "omniauth-yandex"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
+gem 'pundit'
 gem "rails", "~> 7.2.2", ">= 7.2.2.1"
 gem "ruby-vips"
 gem "sassc-rails"
