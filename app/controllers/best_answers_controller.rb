@@ -2,9 +2,10 @@ class BestAnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_answer
   before_action :set_question
-  before_action -> { authorize_user!(@question) }
 
   def create
+    authorize @question, :create?, policy_class: BestAnswerPolicy
+
     @previous_best_answer = @question.best_answer if @question.best_answer
 
     @question.best_answer_id = @answer.id

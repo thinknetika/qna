@@ -41,7 +41,7 @@
                   - if answer == @question.best_answer
                     span.text-success Best answer
                   - else
-                    - if current_user&.owns?(@question)
+                    - if BestAnswerPolicy.new(pundit_user, @question).create?
                       = button_to "Mark as best",
                               best_answers_path(answer_id: answer.id),
                               method: :post,
