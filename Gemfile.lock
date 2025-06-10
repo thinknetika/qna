@@ -45,6 +45,11 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    active_model_serializers (0.10.15)
+      actionpack (>= 4.1)
+      activemodel (>= 4.1)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (7.2.2.1)
       activesupport (= 7.2.2.1)
       globalid (>= 0.3.6)
@@ -117,6 +122,8 @@ GEM
     capybara-email (3.0.2)
       capybara (>= 2.4, < 4.0)
       mail
+    case_transform (0.2)
+      activesupport
     childprocess (5.1.0)
       logger (~> 1.5)
     coderay (1.1.3)
@@ -134,6 +141,8 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.6.2)
+    doorkeeper (5.8.2)
+      railties (>= 5)
     drb (2.2.1)
     erb (5.0.1)
     erubi (1.13.1)
@@ -182,6 +191,7 @@ GEM
       activesupport (>= 5.0.0)
     jmespath (1.6.2)
     json (2.12.0)
+    jsonapi-renderer (0.2.2)
     jwt (2.10.1)
       base64
     language_server-protocol (3.17.0.5)
@@ -248,6 +258,9 @@ GEM
       rack (>= 1.2, < 4)
       snaky_hash (~> 2.0)
       version_gem (>= 1.1.8, < 3)
+    oj (3.16.11)
+      bigdecimal (>= 3.0)
+      ostruct (>= 0.2)
     omniauth (1.9.2)
       hashie (>= 3.4.6)
       rack (>= 1.6.2, < 3)
@@ -268,6 +281,7 @@ GEM
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.0)
     orm_adapter (0.5.0)
+    ostruct (0.6.1)
     parallel (1.27.0)
     parser (3.3.8.0)
       ast (~> 2.4.1)
@@ -480,6 +494,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  active_model_serializers (~> 0.10)
   aws-sdk-s3
   bootsnap
   bootstrap
@@ -488,6 +503,7 @@ DEPENDENCIES
   capybara-email
   debug
   devise (~> 4.2)
+  doorkeeper
   factory_bot_rails
   faker
   font-awesome-sass
@@ -496,6 +512,7 @@ DEPENDENCIES
   jbuilder
   launchy
   letter_opener
+  oj
   omniauth
   omniauth-github
   omniauth-google-oauth2

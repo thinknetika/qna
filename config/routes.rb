@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  use_doorkeeper
+
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
   resources :questions do
@@ -16,6 +18,16 @@ Rails.application.routes.draw do
   resources :best_answers, only: %i[create], path: :best_answer, as: :best_answers
 
   resources :attachments, only: :destroy
+
+  namespace :api do
+    namespace :v1 do
+      resources :profiles, only: [:index] do
+        get :me, on: :collection
+      end
+
+      resources :questions, only: [:index]
+    end
+  end
 
   root to: "questions#index"
 
