@@ -1,13 +1,16 @@
 source "https://rubygems.org"
 
+gem 'active_model_serializers', '~> 0.10'
 gem "aws-sdk-s3", require: false
 gem "bootstrap"
 gem "bootsnap", require: false
 gem 'devise', '~> 4.2'
 gem "font-awesome-sass"
+gem "doorkeeper"
 gem "image_processing", ">= 1.2"
 gem "importmap-rails"
 gem "jbuilder"
+gem 'oj'
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
