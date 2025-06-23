@@ -7,7 +7,7 @@ RSpec.shared_examples 'authorized question response' do
 
   it 'returns all public fields' do
     %w[id title body created_at updated_at].each do |attr|
-      expect(question_response[attr]).to eq questions.first.send(attr).as_json
+      expect(question_response[attr]).to eq question.send(attr).as_json
     end
   end
 
