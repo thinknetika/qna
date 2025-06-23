@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :answers, except: %i[index show], shallow: true do
       post "vote", on: :member
 
-      resources "comments", only: %i[new create edit update destroy], shallow: true
+      resources "comments", except: %i[index], shallow: true
     end
 
     post "vote", on: :member
@@ -25,7 +25,10 @@ Rails.application.routes.draw do
         get :me, on: :collection
       end
 
-      resources :questions, only: %i[index show create update destroy]
+      resources :questions, only: %i[index show create update destroy] do
+        resources :answers, except: %i[edit], shallow: true do
+        end
+      end
     end
   end
 

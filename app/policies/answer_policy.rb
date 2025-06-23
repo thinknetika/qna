@@ -18,4 +18,11 @@ class AnswerPolicy < ApplicationPolicy
   def destroy?
     user&.admin? || user == record.author
   end
+
+  class Scope < Scope
+    def resolve
+      scope.all
+    end
+  end
 end
+

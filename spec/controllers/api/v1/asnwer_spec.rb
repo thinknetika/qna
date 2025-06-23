@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Questions API', type: :request do
+describe 'Answers API', type: :request do
   let(:headers) { { "CONTENT_TYPE" => "application/json",
                     "ACCEPT" => 'application/json' } }
 
@@ -10,60 +10,47 @@ describe 'Questions API', type: :request do
   let(:question) { questions.first }
   let!(:answers_count) { 3 }
   let!(:answers) { create_list(:answer, answers_count, question: question) }
+  let!(:answer) { answers.first }
 
-  describe 'GET /api/v1/questions' do
-    let(:request_url) { "/api/v1/questions" }
-    let(:question_response) { json['questions'].first }
+  describe 'GET /api/v1/questions/question_id/answers' do
+    let(:request_url) { "/api/v1/questions/#{question.id}/answers" }
+    let(:answer_response) { json['answers'].first }
 
     context 'unauthorized' do
-      it_behaves_like 'unauthorized question get requests'
+      it_behaves_like 'unauthorized answer get requests'
     end
 
     context 'authorized' do
       before { get request_url, headers: headers.merge('Authorization' => "Bearer #{access_token.token}") }
 
       it 'returns list of questions' do
-        expect(json['questions'].size).to eq 2
+        expect(json['answers'].size).to eq answer_count
       end
 
-      it_behaves_like 'authorized question response'
-
-      describe 'answers' do
-        let(:answer) { answers.first }
-        let(:answer_response) { question_response['answers'].first }
-
-        it_behaves_like 'answers collection'
-      end
+      it_behaves_like 'authorized answer response'
     end
   end
 
-  describe 'GET /api/v1/questions/question_id' do
-    let(:request_url) { "/api/v1/questions/#{question.id}" }
-    let(:question_response) { json['question'] }
+  describe 'GET /api/v1/answers/answer_id' do
+    let(:request_url) { "/api/v1/answers/#{answer.id}" }
+    let(:answer_response) { json['answer'] }
 
     context 'unauthorized' do
-      it_behaves_like 'unauthorized question get requests'
+      it_behaves_like 'unauthorized answer get requests'
     end
 
     context 'authorized' do
       before { get request_url, headers: headers.merge('Authorization' => "Bearer #{access_token.token}") }
 
-      it_behaves_like 'authorized question response'
-
-      describe 'answers' do
-        let(:answer) { answers.first }
-        let(:answer_response) { question_response['answers'].first }
-
-        it_behaves_like 'answers collection'
-      end
+      it_behaves_like 'authorized answer response'
     end
   end
 
-  describe 'POST /api/v1/questions/' do
-    let(:valid_params) { { question: { title: 'New Question', body: 'Question body' } }.to_json }
+  describe 'POST /api/v1/questions/question_id/answers' do
+    let(:valid_params) { { answer: { body: 'New answer' } }.to_json }
 
-    let(:request_url) { "/api/v1/questions/" }
-    let(:question_response) { json['question'] }
+    let(:request_url) { "/api/v1/questions/#{question.id}/answers" }
+    let(:answer_response) { json['answer'] }
 
     context 'unauthorized' do
       it 'returns 401 status if there is no access_token' do
@@ -84,17 +71,17 @@ describe 'Questions API', type: :request do
         expect(response).to be_successful
       end
 
-      it 'create a new question' do
-        expect(Question.count).to eq questions_count + 1
+      it 'create a new answer' do
+        expect(Answer.count).to eq answers_count + 1
       end
     end
   end
 
-  describe 'PATCH /api/v1/questions/question_id' do
-    let(:update_params) { { question: { title: 'Updated title', body: 'Updated body' } } }
+  describe 'PATCH /api/v1/answers/answer_id' do
+    let(:update_params) { { answer: { body: 'Updated answer' } } }
 
-    let(:request_url) { "/api/v1/questions/#{question.id}" }
-    let(:question_response) { json['question'] }
+    let(:request_url) { "/api/v1/answers/#{answer.id}" }
+    let(:answer_response) { json['answer'] }
 
     context 'unauthorized' do
       it 'returns 401 status if there is no access_token' do
@@ -115,15 +102,14 @@ describe 'Questions API', type: :request do
         expect(response).to be_successful
       end
 
-      it 'update question' do
-        expect(json['question']['title']).to eq(update_params[:question][:title])
-        expect(json['question']['body']).to eq(update_params[:question][:body])
+      it 'update answer' do
+        expect(json['answer']['body']).to eq(update_params[:answer][:body])
       end
     end
   end
 
-  describe 'DELETE /api/v1/questions/question_id' do
-    let(:request_url) { "/api/v1/questions/#{question.id}" }
+  describe 'DELETE /api/v1/answers/answer.id' do
+    let(:request_url) { "/api/v1/answers/#{answer.id}" }
 
     context 'unauthorized' do
       it 'returns 401 status if there is no access_token' do
@@ -144,8 +130,8 @@ describe 'Questions API', type: :request do
         expect(response).to be_no_content
       end
 
-      it 'delete question' do
-        expect(Question.count).to eq questions_count - 1
+      it 'delete answer' do
+        expect(Answer.count).to eq answers_count - 1
       end
     end
   end
