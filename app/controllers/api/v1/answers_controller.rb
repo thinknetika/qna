@@ -1,8 +1,8 @@
 module Api
   module V1
     class AnswersController < BaseController
-      before_action :set_answer, only: [:show, :update, :destroy]
-      before_action :set_question, only: [:create]
+      before_action :answer, only: [:show, :update, :destroy]
+      before_action :question, only: [:create]
 
       def index
         answers = policy_scope(Answer).where(question_id: params[:question_id])
@@ -46,12 +46,12 @@ module Api
 
       private
 
-      def set_answer
-        @answer = Answer.find(params[:id])
+      def answer
+        @answer ||= Answer.find(params[:id])
       end
 
-      def set_question
-        @question = Question.find(params[:question_id])
+      def question
+        @question ||= Question.find(params[:question_id])
       end
 
       def answer_params
