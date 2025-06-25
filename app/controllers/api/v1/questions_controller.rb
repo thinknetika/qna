@@ -1,5 +1,5 @@
 class Api::V1::QuestionsController < Api::V1::BaseController
-  before_action :set_question, only: %i[show update destroy]
+  before_action :question, only: %i[show update destroy]
 
   def index
     @questions = Question.all
@@ -42,8 +42,8 @@ class Api::V1::QuestionsController < Api::V1::BaseController
 
   private
 
-  def set_question
-    @question = Question.find(params[:id])
+  def question
+    @question ||= Question.find(params[:id])
   end
 
   def question_params

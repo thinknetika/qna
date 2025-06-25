@@ -5,7 +5,7 @@ describe 'Profiles API', type: :request do
                     "ACCEPT" => 'application/json' } }
 
   describe 'GET /api/v1/profiles/me' do
-    context 'unauthorized' do
+    context 'when unauthorized' do
       it 'returns 401 status if there is no access_token' do
         get '/api/v1/profiles/me', headers: headers
         expect(response.status).to eq 401
@@ -17,7 +17,7 @@ describe 'Profiles API', type: :request do
       end
     end
 
-    context 'authorized' do
+    context 'when authorized' do
       let(:me) { create(:user) }
       let(:access_token) { create(:access_token, resource_owner_id: me.id) }
 
