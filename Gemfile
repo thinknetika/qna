@@ -23,6 +23,7 @@ gem 'pundit'
 gem "rails", "~> 7.2.2", ">= 7.2.2.1"
 gem "ruby-vips"
 gem "sassc-rails"
+gem "sidekiq"
 gem "slim-rails"
 gem "sprockets-rails"
 gem "stimulus-rails"

@@ -5,6 +5,10 @@ FactoryBot.define do
     association :author, factory: :user
   end
 
+  trait :without_author do
+    author { nil }
+  end
+
   trait :invalid_question do
     title { nil }
   end
