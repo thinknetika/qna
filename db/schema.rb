@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_05_194903) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_16_185534) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -122,6 +122,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_05_194903) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "question_subscriptions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "question_id", null: false
+    t.boolean "is_active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_question_subscriptions_on_question_id"
+    t.index ["user_id", "question_id"], name: "index_question_subscriptions_on_user_id_and_question_id", unique: true
+    t.index ["user_id"], name: "index_question_subscriptions_on_user_id"
+  end
+
   create_table "questions", force: :cascade do |t|
     t.string "title"
     t.text "body"
@@ -191,6 +202,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_05_194903) do
   add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
+  add_foreign_key "question_subscriptions", "questions"
+  add_foreign_key "question_subscriptions", "users"
   add_foreign_key "questions", "answers", column: "best_answer_id"
   add_foreign_key "questions", "users", column: "author_id"
   add_foreign_key "rewards", "questions"

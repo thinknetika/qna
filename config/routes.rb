@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     post "vote", on: :member
 
     resources "comments", only: %i[new create update destroy], shallow: true
+
+    resource :subscription, only: [:create, :destroy], controller: 'question_subscriptions'
   end
 
   resources :best_answers, only: %i[create], path: :best_answer, as: :best_answers

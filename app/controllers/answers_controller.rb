@@ -24,6 +24,8 @@ class AnswersController < ApplicationController
         locals: { answer: @answer }
       )
 
+      AnswerNotificationJob.perform_later(@answer)
+
       turbo_stream
     else
       render :new, status: :unprocessable_entity

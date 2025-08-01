@@ -1,0 +1,16 @@
+h2 Новый ответ на вопрос
+
+p Привет, "#{@user.name}"
+
+p На вопрос "#{@question.title}" был добавлен новый ответ:
+
+blockquote
+  = @answer.content
+
+p Автор ответа: "#{@answer.user.name}"
+
+p
+  = link_to 'Посмотреть вопрос', question_url(@question)
+
+p
+  = link_to 'Отписаться от уведомлений', question_subscription_url(@question), method: :delete
