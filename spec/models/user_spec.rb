@@ -22,6 +22,14 @@ RSpec.describe User, type: :model do
     context 'authorizations' do
       it { should have_many(:authorizations) }
     end
+
+    context 'question_subscriptions' do
+      it { should have_many(:question_subscriptions).dependent(:destroy) }
+    end
+
+    context 'subscribed_questions' do
+      it { should have_many(:subscribed_questions).through(:question_subscriptions).source(:question) }
+    end
   end
 
   describe 'validations' do
@@ -47,6 +55,33 @@ RSpec.describe User, type: :model do
     it 'returns false if the user does not own the resource' do
       resource.update(author: other_user)
       expect(user.owns?(resource)).to be_falsy
+    end
+  end
+
+  describe '#subscribed_to?' do
+    let(:user) { create(:user) }
+    let(:question) { create(:question) }
+
+    context 'when user has active subscription' do
+      before { create(:question_subscription, user: user, question: question, is_active: true) }
+
+      it 'returns true' do
+        expect(user.subscribed_to?(question)).to be true
+      end
+    end
+
+    context 'when user has inactive subscription' do
+      before { create(:question_subscription, user: user, question: question, is_active: false) }
+
+      it 'returns false' do
+        expect(user.subscribed_to?(question)).to be false
+      end
+    end
+
+    context 'when user has no subscription' do
+      it 'returns false' do
+        expect(user.subscribed_to?(question)).to be false
+      end
     end
   end
 

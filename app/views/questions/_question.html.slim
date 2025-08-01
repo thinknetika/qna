@@ -40,3 +40,5 @@
         - if current_user
           div id="question_new_comment"
             = render partial:'comments/shared/new_comment', locals: { commentable: @question }
+
+      = subscription_button(question)

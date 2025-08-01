@@ -17,4 +17,27 @@ module QuestionsHelper
 
     link_to "Delete", question_path(question), options
   end
+
+  def subscription_button(question)
+    return unless user_signed_in?
+
+    if current_user.subscribed_to?(question)
+      link_to 'Unsubscribe',
+              question_subscription_path(question),
+              method: :delete,
+              data: {
+                turbo_method: :delete,
+                turbo_confirm: "Are you sure"
+              },
+              class: 'btn btn-outline-secondary'
+    else
+      link_to 'Subscribe',
+              question_subscription_path(question),
+              method: :post,
+              data: {
+                turbo_method: :post
+              },
+              class: 'btn btn-primary'
+    end
+  end
 end

@@ -17,6 +17,9 @@ class User < ApplicationRecord
 
   has_many :authorizations
 
+  has_many :question_subscriptions, dependent: :destroy
+  has_many :subscribed_questions, through: :question_subscriptions, source: :question
+
   def owns?(resource)
     id == resource.author_id
   end
@@ -27,5 +30,9 @@ class User < ApplicationRecord
 
   def create_authorization(auth)
     self.authorizations.create(provider: auth.provider, uid: auth.uid)
+  end
+
+  def subscribed_to?(question)
+    question_subscriptions.active.exists?(question: question)
   end
 end
