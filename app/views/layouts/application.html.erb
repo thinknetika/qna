@@ -21,9 +21,32 @@
 
 <body>
 <%= render 'layouts/navbar' %>
+
+<div class="container">
+  <%= form_with url: search_path, method: :get, data: {turbo_stream: true}, html: { class: "mb-3" } do |form| %>
+    <div class="input-group">
+      <%= form.text_field :query, value: params[:query], class: "form-control", placeholder: "Search..." %>
+      <%= form.select :category, options_for_select([["All Categories", "all"],
+                                                     %w[Questions questions],
+                                                     %w[Answers answers],
+                                                     %w[Users users],
+                                                     %w[Comments comments]],
+                                                    params[:category]),
+                      { include_blank: "Select Category" },
+                      { class: "form-select" } %>
+
+
+      <button type="submit" class="btn btn-outline-secondary">Search</button>
+    </div>
+  <% end %>
+
   <p class="notice"><%= notice %></p>
   <p class="alert"><%= alert %></p>
-<div class="container">
+
+  <turbo-frame id="search-results">
+    <%# Initial content or empty state %>
+  </turbo-frame>
+
   <%= yield %>
 </div>
 </body>

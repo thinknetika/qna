@@ -1,0 +1,7 @@
+- if results[:answers].present?
+  h4 Answers
+  ul
+    - results[:answers].each do |answer|
+      li = link_to truncate(answer.body, length: 50), answer.question
+- else
+  p No answers found

@@ -48,3 +48,7 @@
 
 # Ignore node modules
 /node_modules
+
+# Ignore sphinx indexces
+config/*.sphinx.conf
+db/sphinx
