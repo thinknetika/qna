@@ -1,0 +1,8 @@
+- if results[:questions].present?
+  h4 Questions
+  ul
+    - results[:questions].each do |question|
+      li
+        = link_to question.title, question
+- else
+  p No questions found.

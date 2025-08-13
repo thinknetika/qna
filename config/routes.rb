@@ -7,6 +7,8 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
+  get '/search', to: 'search#index', as: 'search'
+
   resources :questions do
     resources :answers, except: %i[index show], shallow: true do
       post "vote", on: :member

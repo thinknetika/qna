@@ -1,0 +1,10 @@
+development: &common
+  port: 9312
+  address: localhost
+  mysql41: 9306
+
+test:
+  <<: *common
+
+production:
+  <<: *common

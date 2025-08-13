@@ -19,6 +19,16 @@
 
 # Learn more: http://github.com/javan/whenever
 
+# daily digest scheduled
 every 1.days do
   runner "DailyDigestJob.perform_now"
+end
+
+#thinking sphinx scheduled
+every 15.minutes do
+  rake "ts:delta"
+end
+
+every 1.day, at: '5:00 am' do
+  rake "ts:index"
 end
