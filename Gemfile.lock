@@ -182,6 +182,7 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
+    innertube (1.1.0)
     io-console (0.8.0)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -191,6 +192,8 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jmespath (1.6.2)
+    joiner (0.6.0)
+      activerecord (>= 6.1.0)
     json (2.12.2)
     jsonapi-renderer (0.2.2)
     jwt (3.1.1)
@@ -215,6 +218,7 @@ GEM
     marcel (1.0.4)
     matrix (0.4.3)
     method_source (1.1.0)
+    middleware (0.1.0)
     mini_magick (5.2.0)
       benchmark
       logger
@@ -223,6 +227,7 @@ GEM
     msgpack (1.8.0)
     multi_xml (0.7.2)
       bigdecimal (~> 3.1)
+    mysql2 (0.5.6)
     net-http (0.6.0)
       uri
     net-imap (0.5.9)
@@ -358,6 +363,7 @@ GEM
       actionpack (>= 5.2)
       railties (>= 5.2)
     rexml (3.4.1)
+    riddle (2.4.3)
     rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -461,6 +467,13 @@ GEM
       railties (>= 6.0.0)
     stringio (3.1.7)
     temple (0.10.3)
+    thinking-sphinx (5.6.0)
+      activerecord (>= 4.2.0)
+      builder (>= 2.1.2)
+      innertube (>= 1.0.2)
+      joiner (>= 0.3.4)
+      middleware (>= 0.1.0)
+      riddle (~> 2.3)
     thor (1.3.2)
     tilt (2.6.0)
     timeout (0.4.3)
@@ -523,6 +536,7 @@ DEPENDENCIES
   jbuilder
   launchy
   letter_opener
+  mysql2 (>= 0.5)
   oj
   omniauth
   omniauth-github
@@ -546,6 +560,7 @@ DEPENDENCIES
   sprockets-rails
   sqlite3
   stimulus-rails
+  thinking-sphinx (~> 5.0)
   turbo-rails
   tzinfo-data
   web-console

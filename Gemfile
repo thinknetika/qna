@@ -10,6 +10,7 @@ gem "doorkeeper"
 gem "image_processing", ">= 1.2"
 gem "importmap-rails"
 gem "jbuilder"
+gem "mysql2", ">= 0.5"
 gem 'oj'
 gem "omniauth"
 gem "omniauth-github"
@@ -27,6 +28,7 @@ gem "sidekiq"
 gem "slim-rails"
 gem "sprockets-rails"
 gem "stimulus-rails"
+gem 'thinking-sphinx', '~> 5.0'
 gem "turbo-rails"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem 'whenever', require: false

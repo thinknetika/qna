@@ -7,8 +7,8 @@ nav.navbar.navbar-expand-lg.bg-body-tertiary
 
     #navbarNavAltMarkup.collapse.navbar-collapse
       ul.navbar-nav.me-auto
-        li.nav-item = link_to 'Главная', questions_path, class: 'nav-link'
-        li.nav-item = link_to 'Вопросы', questions_path, class: 'nav-link'
+        li.nav-item = link_to 'Главная', questions_path, data: { turbo: false }, class: 'nav-link'
+        li.nav-item = link_to 'Вопросы', questions_path, data: { turbo: false }, class: 'nav-link'
 
       ul.navbar-nav.ms-auto
         - if user_signed_in?
@@ -22,4 +22,3 @@ nav.navbar.navbar-expand-lg.bg-body-tertiary
         - else
           li.nav-item = link_to "Sign in", new_user_session_path, class: 'nav-link'
           li.nav-item = link_to "Sign up", new_user_registration_path , class: 'nav-link'
-

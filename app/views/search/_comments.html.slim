@@ -1,0 +1,7 @@
+- if results[:comments].present?
+  h4 Comments
+  ul
+    - results[:comments].each do |comment|
+      li = truncate(comment.body, length: 50)
+- else
+  p No comments found.

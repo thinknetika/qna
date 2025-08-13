@@ -1,8 +1,9 @@
 - if @user_rewards
   = render partial: 'layouts/rewards', locals: { collection: @user_rewards }
 
-= turbo_frame_tag 'new_question'
-    = render 'questions/shared/new_question'
+- if current_user
+  = turbo_frame_tag 'new_question'
+  = render 'questions/shared/new_question'
 
 = turbo_stream_from("questions_channel")
 

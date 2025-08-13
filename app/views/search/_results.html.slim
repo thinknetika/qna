@@ -1,0 +1,8 @@
+- if query.present?
+  h4 Search results for: #{query}
+  - if @selected_category && @selected_category != "all"
+    p Category: #{@selected_category.capitalize}
+
+  = search_results(@selected_category, @results)
+- else
+  p Please enter a search query.
