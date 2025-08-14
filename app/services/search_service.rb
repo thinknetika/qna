@@ -1,6 +1,7 @@
 class SearchService
   def self.search(query, category)
     results = {}
+    query = ThinkingSphinx::Query.escape(query)
 
     case category
     when "questions"

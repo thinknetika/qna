@@ -4,6 +4,7 @@ gem 'active_model_serializers', '~> 0.10'
 gem "aws-sdk-s3", require: false
 gem "bootstrap"
 gem "bootsnap", require: false
+gem 'database_cleaner'
 gem 'devise', '~> 4.2'
 gem "font-awesome-sass"
 gem "doorkeeper"

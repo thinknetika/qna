@@ -2,6 +2,6 @@
   h4 Users
   ul
     - results[:users].each do |user|
-      li = link_to user.email, user
+      li = user.email
 - else
   p No users found.
