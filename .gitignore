@@ -52,3 +52,4 @@
 # Ignore sphinx indexces
 config/*.sphinx.conf
 db/sphinx
+/vendor

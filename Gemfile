@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+ruby "3.2.3"
+
 gem 'active_model_serializers', '~> 0.10'
 gem "aws-sdk-s3", require: false
 gem "bootstrap"
@@ -11,12 +13,13 @@ gem "doorkeeper"
 gem "image_processing", ">= 1.2"
 gem "importmap-rails"
 gem "jbuilder"
+gem "jwt", "~> 2.0"
 gem "mysql2", ">= 0.5"
 gem 'oj'
 gem "omniauth"
 gem "omniauth-github"
 gem "omniauth-rails_csrf_protection"
-gem "omniauth-google-oauth2"
+gem "omniauth-google-oauth2", "~> 0.8.0"
 gem "omniauth-oauth2"
 gem "omniauth-yandex"
 gem "pg", "~> 1.1"
@@ -48,6 +51,12 @@ group :development do
   gem "web-console"
   gem "pry-rails"
   gem "letter_opener"
+  gem 'capistrano', require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano-rails', require: false
+  gem 'capistrano-rvm', require: false
+  gem 'capistrano-passenger', require: false
+  gem 'capistrano-sidekiq', require: false
 end
 
 group :test do
