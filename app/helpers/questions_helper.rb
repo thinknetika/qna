@@ -2,7 +2,7 @@ module QuestionsHelper
   def show_view(question)
     return false if request.params[:action] == "index"
 
-    request.params[:action] == "show" || request.referrer&.include?(question)
+    request.params[:action] == "show" || request.referrer&.include?(polymorphic_path(question))
   end
 
   def delete_link_with_conditional_turbo_frame(question, css_class)
