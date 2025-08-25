@@ -74,10 +74,6 @@ Rails.application.configure do
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "qna_production"
 
-  # Disable caching for Action Mailer templates even if Action Controller
-  # caching is enabled.
-  config.action_mailer.perform_caching = false
-
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
@@ -102,4 +98,24 @@ Rails.application.configure do
   # ]
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  config.action_mailer.perform_caching = false
+  config.action_mailer.default_url_options = { host: "http://qna-stud.ru" }
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.default_options = {
+    from: Rails.application.credentials.dig(:production, :smtp, :user_name)
+  }
+
+  config.action_mailer.smtp_settings = {
+    address: "smtp.yandex.ru",
+    port: 465,
+    domain: "yandex.ru",
+    user_name: Rails.application.credentials.dig(:production, :smtp, :user_name),
+    password: Rails.application.credentials.dig(:production, :smtp, :password),
+    authentication: "plain",
+    tls: true,
+    enable_starttls_auto: true,
+    ssl: true
+  }
 end
