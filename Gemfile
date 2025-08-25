@@ -66,3 +66,7 @@ group :test do
   gem "shoulda-matchers", "~> 6.0"
   gem "launchy"
 end
+
+group :production do
+  gem "redis"
+end
