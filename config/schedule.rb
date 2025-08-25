@@ -29,6 +29,6 @@ every 15.minutes do
   rake "ts:delta"
 end
 
-every 1.day, at: '5:00 am' do
+every 30.minutes do
   rake "ts:index"
 end
