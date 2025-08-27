@@ -14,3 +14,5 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 set :rvm_path, '/usr/share/rvm'
 set :rvm_custom_path, '/usr/share/rvm'
 set :rvm_ruby_version, '3.2.3'
+
+after 'deploy:publishing', 'unicorn:restart'
