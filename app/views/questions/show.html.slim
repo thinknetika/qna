@@ -1,9 +1,12 @@
-= render partial: 'questions/question', locals: { question: @question }
+- cache(@question) do
+  = render partial: 'questions/question', locals: { question: @question }
 
 = turbo_stream_from("answers_channel")
 
-div id="answers" data-controller="answer-order answers" data-answer-order-target="answersContainer"
-  = render partial: 'answers/answer', collection: @question.answers
+- cache(["question_answers", @question]) do
+  div id="answers" data-controller="answer-order answers" data-answer-order-target="answersContainer"
+    - @question.answers.each do |answer|
+      = render partial: 'answers/answer', locals: { answer: answer, cached: true }
 
 - if current_user
-  = render partial: 'answers/shared/new_answer'
+  = render partial: 'answers/shared/new_answer', locals: { question: @question }

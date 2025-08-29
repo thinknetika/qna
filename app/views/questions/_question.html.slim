@@ -18,27 +18,40 @@
 
         div
           - if current_user
-            =render partial: 'layouts/vote_buttons', locals: { votable: question }
+            = render partial: 'layouts/vote_buttons', locals: { votable: question }
 
         div
           - unless show_view(question)
             = link_to 'Show', question_path(question), data: { turbo: false }, class: "btn btn-primary btn-sm"
-
           - if policy(question).edit?
-            = link_to 'Edit', edit_question_path(question), data: {turbo_stream: true}, class: "btn btn-warning btn-sm ms-2"
+            = link_to 'Edit', edit_question_path(question), data: { turbo_stream: true }, class: "btn btn-warning btn-sm ms-2"
           - if policy(question).destroy?
             = delete_link_with_conditional_turbo_frame(question, "btn btn-danger btn-sm ms-2")
 
       - if show_view(question)
-
         = turbo_stream_from("question_comments_channel")
 
-        div id="question_comments"
-          - @question&.comments&.each do |comment|
-            = render partial: 'comments/comment', locals: { comment: comment, commentable: @question }
+        - cache(["question_comments", question]) do
+          div#question_comments
+            - question.comments.each do |comment|
+              - cache(["comment", comment]) do
+                = turbo_frame_tag comment do
+                  p.card-text = comment.body
+                  .d-flex.align-items-center.mt-2
+                    - if policy(comment).edit?
+                      = link_to 'Edit',
+                              edit_comment_path(comment),
+                              data: { turbo_stream: true },
+                              class: "btn btn-warning btn-sm me-2"
+                    - if policy(comment).destroy?
+                      = link_to 'Delete',
+                              comment_path(comment),
+                              method: :delete,
+                              data: { turbo_method: :delete, turbo_confirm: 'Are you sure' },
+                              class: "btn btn-danger btn-sm me-2"
 
-        - if current_user
-          div id="question_new_comment"
-            = render partial:'comments/shared/new_comment', locals: { commentable: @question }
+          - if current_user
+            div#question_new_comment
+              = render partial:'comments/shared/new_comment', locals: { commentable: question }
 
       = subscription_button(question)
